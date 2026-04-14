@@ -1,13 +1,13 @@
-package com.kaiga.despesasv2;
+package com.kaiga.expensesV2;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Despesasv2Application {
+public class ExpensesV2Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Despesasv2Application.class, args);
+		SpringApplication.run(ExpensesV2Application.class, args);
 	}
 
 }

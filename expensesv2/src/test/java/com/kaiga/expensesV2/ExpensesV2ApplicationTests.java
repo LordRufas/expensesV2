@@ -1,10 +1,10 @@
-package com.kaiga.despesasv2;
+package com.kaiga.expensesV2;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Despesasv2ApplicationTests {
+class ExpensesV2ApplicationTests {
 
 	@Test
 	void contextLoads() {
