@@ -1,7 +1,7 @@
-package com.kaiga.expensesV2.repository;
+package com.kaiga.expenses.repository;
 
-import com.kaiga.expensesV2.entity.ExcelRow;
-import com.kaiga.expensesV2.entity.ExcelSheet;
+import com.kaiga.expenses.entity.ExcelRow;
+import com.kaiga.expenses.entity.ExcelSheet;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,13 +18,8 @@ public class Core {
 
     @Value("${app.repositoryFileName}")
     private String fileName;
-    public void getData(){
 
-
-    }
-
-
-    public ExcelSheet ReadFromFile(int sheetNumber){
+    public ExcelSheet readFromFile(int sheetNumber){
         try{
             ExcelSheet excelSheet = new ExcelSheet();
             ClassPathResource res = new ClassPathResource(fileName);

@@ -1,16 +1,15 @@
-package com.kaiga.expensesV2.controller;
+package com.kaiga.expenses.controller;
 
 
 
-import com.kaiga.expensesV2.repository.Core;
-import com.kaiga.expensesV2.services.Teste;
+import com.kaiga.expenses.repository.Core;
+import com.kaiga.expenses.services.Teste;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CoreController {
 
-    @Autowired
     private final Teste teste;
 
     @Autowired
@@ -21,7 +20,7 @@ public class CoreController {
 
     @GetMapping("/helloworld")
     public String helloWorld(){
-        return teste.Read();
+        return teste.read();
     }
 
 }

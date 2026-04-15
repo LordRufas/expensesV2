@@ -1,58 +1,43 @@
-package com.kaiga.expensesV2.entity;
+package com.kaiga.expenses.entity;
 
 import java.util.ArrayList;
-
+import java.util.List;
 
 
 public class ExcelSheet {
 
-    private ArrayList<ExcelRow> excelRows;
-    private ExcelRow headers;
-
-    public ExcelSheet(ArrayList<ExcelRow> excelRows, ExcelRow headers) {
-        this.excelRows = excelRows;
-        this.headers= headers;
-    }
+    private final List<ExcelRow> excelRows;
+    private final ExcelRow headers;
 
     public ExcelSheet() {
-        this.excelRows = new ArrayList<ExcelRow>();
+        this.excelRows = new ArrayList<>();
         this.headers = new ExcelRow();
 
     }
 
-    public void setRows(ArrayList<ExcelRow> excelRows) {
-        this.excelRows = excelRows;
-    }
-
-    public void addRow(ExcelRow excelRow) {
-        this.excelRows.add(excelRow);
-    }
-
-    public ArrayList<ExcelRow> getExcelRows() {
+    public List<ExcelRow> getExcelRows() {
         return excelRows;
-    }
-
-    public void setExcelRows(ArrayList<ExcelRow> excelRows) {
-        this.excelRows = excelRows;
     }
 
     public ExcelRow getHeaders() {
         return headers;
     }
 
+    public void addRow(ExcelRow excelRow) {
+        this.excelRows.add(excelRow);
+    }
+
     public void setHeaders() {
-        if(excelRows.isEmpty())
+        if (excelRows.isEmpty())
             return;
         this.headers.setData(excelRows.get(0).getData());
         this.excelRows.removeFirst();
     }
 
-
-
-    public String SheetData(){
+    public String sheetData() {
         StringBuilder data = new StringBuilder();
         data.append("{ \"data\": [");
-        if(this.headers.getData().size() > 0) {
+        if (!this.headers.getData().isEmpty()) {
             for (ExcelRow excelRow : this.excelRows) {
                 data.append("{");
                 int iterator = 0;

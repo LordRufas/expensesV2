@@ -1,4 +1,4 @@
-package com.kaiga.expensesV2.entity;
+package com.kaiga.expenses.entity;
 
 public enum SheetEnum{
 
