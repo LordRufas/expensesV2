@@ -5,7 +5,6 @@ import com.kaiga.expenses.entity.ExcelSheet;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -26,16 +25,15 @@ public class Core {
                 FileInputStream fis = new FileInputStream(file);
                 Workbook workbook = new XSSFWorkbook(fis)
         ) {
-
             Sheet sheet = workbook.getSheetAt(sheetNumber);
 
             for (Row row : sheet) {
                 ExcelRow excelRow = getExcelRow(row);
                 excelSheet.addRow(excelRow);
-
-
             }
+
             excelSheet.setHeaders();
+
             return excelSheet;
         } catch (IOException e) {
             return null;
@@ -65,14 +63,11 @@ public class Core {
 
 
     public String addToSheet(int sheetNumber, List<Object> values) {
-
         File file = new File(fileName);
         try (
                 FileInputStream fis = new FileInputStream(file);
                 Workbook workbook = new XSSFWorkbook(fis)
         ) {
-
-
             Sheet sheet = workbook.getSheetAt(sheetNumber);
 
             // Find the last row index (0-based)
@@ -89,7 +84,6 @@ public class Core {
             OutputStream outputStream = new FileOutputStream(fileName);
             workbook.write(outputStream);
 
-
             return "OK";
 
         } catch (IOException e) {
@@ -99,14 +93,12 @@ public class Core {
 
     public String deleteRow(int sheetIndex, List<Object> parameters) {
         String response = "Not found";
-        ExcelSheet excelSheet = new ExcelSheet();
         File file = new File(fileName);
         try (
                 FileInputStream fis = new FileInputStream(file);
                 Workbook workbook = new XSSFWorkbook(fis)
         ) {
             Sheet sheet = workbook.getSheetAt(sheetIndex);
-
 
             for (int i = sheet.getLastRowNum(); i >= 0; i--) {
                 Row row = sheet.getRow(i);
@@ -130,10 +122,7 @@ public class Core {
     private boolean deleteRowIfExists(Sheet sheet, Row row, List<Object> parameters) {
         boolean found = true;
         for (int i = 0; i < row.getLastCellNum(); i++) {
-            System.out.println("Found + " + String.valueOf(parameters.get(i)));
-            System.out.println("Found ++ " + getCellType(row.getCell(i)));
-
-            if (!String.valueOf(parameters.get(i)).equals(getCellType(row.getCell(i)))) {
+          if (!String.valueOf(parameters.get(i)).equals(getCellType(row.getCell(i)))) {
                 found = false;
                 break;
             }

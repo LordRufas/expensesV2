@@ -2,8 +2,6 @@ package com.kaiga.expenses.entity;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ExcelSheetTest {
@@ -33,7 +31,7 @@ class ExcelSheetTest {
     void testSheetData() {
         ExcelSheet excelSheet = new ExcelSheet();
         ExcelRow row = new ExcelRow();
-        row.addData("userid");
+        row.addData("userId");
         row.addData("date");
         row.addData("typeid");
         row.addData("value");
@@ -47,7 +45,7 @@ class ExcelSheetTest {
         excelSheet.addRow(row);
         excelSheet.addRow(row1);
         excelSheet.setHeaders();
-        assertEquals("{ \"data\": [{\"userid\":\"1.0\",\"date\":\"12.0\",\"typeid\":\"1.0\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}",excelSheet.sheetData());
+        assertEquals("{ \"data\": [{\"userId\":\"1.0\",\"date\":\"12.0\",\"typeid\":\"1.0\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}",excelSheet.sheetData());
     }
 
     @Test
