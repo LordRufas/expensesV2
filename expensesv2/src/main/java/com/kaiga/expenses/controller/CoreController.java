@@ -18,9 +18,23 @@ public class CoreController {
     }
 
 
-    @GetMapping("/helloworld")
-    public String helloWorld(){
-        return teste.read();
+    @GetMapping("/read")
+    public String read(@RequestParam int id){
+        return teste.read(id);
     }
 
+    @PostMapping("/insert")
+    public String insert(){
+        return teste.insert();
+    }
+
+    @PatchMapping("/delete")
+    public String delete(){
+        return teste.delete();
+    }
+
+    @PatchMapping("/purge")
+    public String purge(){
+        return teste.purge();
+    }
 }

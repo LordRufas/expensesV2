@@ -6,7 +6,5 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CoreControllerTest {
 
-    @Test
-    void helloWorld() {
-    }
+
 }

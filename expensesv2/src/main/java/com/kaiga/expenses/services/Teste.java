@@ -4,6 +4,9 @@ import com.kaiga.expenses.entity.ExcelSheet;
 import com.kaiga.expenses.repository.Core;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.kaiga.expenses.entity.SheetEnum.*;
 
 @Component
@@ -16,28 +19,49 @@ public class Teste {
         this.core = core;
     }
 
-    public String read(){
-        ExcelSheet sheet = core.readFromFile(TRANSACTION.getId());
-
+    public String read(int id) {
+        ExcelSheet sheet = core.readFromFile(id);
         return sheet.sheetData();
-
-    }
- /*
-    public void Insert(){
-
-
     }
 
-    public void Delete(){
+    public String insert() {
+        List<Object> values = new ArrayList<>();
+        values.add(1);
+        values.add("test");
+        values.add("Pass");
 
+        return core.addToSheet(USERS.getId(), values);
 
     }
 
+    public String delete() {
+        List<Object> values = new ArrayList<>();
+        values.add(1.0);
+        values.add("teste");
+        values.add("password");
+        return core.deleteRow(USERS.getId(), values);
+    }
 
-    public void Update(){
+    public String purge() {
+        String response = "Success";
+        String deleteUsers = core.purge(USERS.getId());
+        String deleteTransaction = core.purge(TRANSACTION.getId());
+        String deleteType = core.purge(TYPE.getId());
+        String deleteTotals = core.purge(TOTALS.getId());
+        if (deleteUsers.equals(response)
+                && deleteTransaction.equals(response)
+                && deleteType.equals(response)
+                && deleteTotals.equals(response))
+            return "Done";
+        else
+            return "Error";
+    }
 
+
+    public void update() {
+        System.out.println("Todo");
 
     }
-    */
+
 
 }
