@@ -167,4 +167,50 @@ public class Core {
     }
 
 
+    public String update(int sheetIndex, List<Object> oldValues, List<Object> newValues) {
+        String response = "Not found";
+        File file = new File(fileName);
+        try (
+                FileInputStream fis = new FileInputStream(file);
+                Workbook workbook = new XSSFWorkbook(fis)
+        ) {
+            Sheet sheet = workbook.getSheetAt(sheetIndex);
+
+            for (int i = sheet.getLastRowNum(); i >= 0; i--) {
+                Row row = sheet.getRow(i);
+                if (row != null && updateRowIfExists(row, oldValues, newValues))
+                    response = "Success";
+
+            }
+
+            // Write changes back to file
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                workbook.write(fos);
+            }
+            return response;
+
+        } catch (IOException e) {
+            return "Error " + e.getMessage();
+        }
+    }
+
+    private boolean updateRowIfExists(Row row, List<Object> oldValues,List<Object> newValues) {
+        boolean found = true;
+        for (int i = 0; i < row.getLastCellNum(); i++) {
+            if (!String.valueOf(oldValues.get(i)).equals(getCellType(row.getCell(i)))) {
+                found = false;
+                break;
+            }
+        }
+
+        if (found){
+            for (int i = 0; i < row.getLastCellNum(); i++) {
+                Cell cell = row.getCell(i);
+                cell.setCellValue(String.valueOf(newValues.get(i)));
+            }
+        }
+
+
+        return found;
+    }
 }

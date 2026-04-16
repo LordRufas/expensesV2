@@ -37,4 +37,9 @@ public class CoreController {
     public String purge(){
         return teste.purge();
     }
+
+    @PatchMapping("/update")
+    public String update(){
+        return teste.update();
+    }
 }

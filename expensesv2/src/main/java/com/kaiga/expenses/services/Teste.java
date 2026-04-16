@@ -58,8 +58,16 @@ public class Teste {
     }
 
 
-    public void update() {
-        System.out.println("Todo");
+    public String update() {
+        List<Object> oldValues = new ArrayList<>();
+        oldValues.add(1);
+        oldValues.add("test");
+        oldValues.add("Pass");
+        List<Object> newValues = new ArrayList<>();
+        newValues.add(1);
+        newValues.add("test");
+        newValues.add("password");
+        return core.update(USERS.getId(),oldValues, newValues);
 
     }
 
