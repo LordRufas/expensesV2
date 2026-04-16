@@ -13,11 +13,16 @@ import java.util.List;
 @Component
 public class Core {
 
+    private static final String SUCCESS = "Success";
+
+    private static final String NOT_FOUND = "Data not found";
+    private static final String ERROR_RESPONSE = "An error has occurred: ";
+
 
     @Value("${app.repositoryFileName}")
     private String fileName;
 
-    public ExcelSheet readFromFile(int sheetNumber) {
+    public ExcelSheet read(int sheetNumber){
 
         ExcelSheet excelSheet = new ExcelSheet();
         File file = new File(fileName);
@@ -35,34 +40,12 @@ public class Core {
             excelSheet.setHeaders();
 
             return excelSheet;
-        } catch (IOException e) {
-            return null;
+        } catch (Exception e) {
+           return null;
         }
     }
 
-    private ExcelRow getExcelRow(Row row) {
-        ExcelRow excelRow = new ExcelRow();
-        for (int i = 0; i < row.getLastCellNum(); i++) {
-            excelRow.addData(getCellType(row.getCell(i)));
-        }
-        return excelRow;
-    }
-
-    private String getCellType(Cell cell) {
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue();
-            case NUMERIC:
-                return String.valueOf(cell.getNumericCellValue());
-            case BOOLEAN:
-                return String.valueOf(cell.getBooleanCellValue());
-            default:
-                return null;
-        }
-    }
-
-
-    public String addToSheet(int sheetNumber, List<Object> values) {
+    public String add(int sheetNumber, List<Object> values) {
         File file = new File(fileName);
         try (
                 FileInputStream fis = new FileInputStream(file);
@@ -84,15 +67,44 @@ public class Core {
             OutputStream outputStream = new FileOutputStream(fileName);
             workbook.write(outputStream);
 
-            return "OK";
+            return SUCCESS;
 
-        } catch (IOException e) {
-            return "ERROR: " + e.getMessage();
+        } catch (Exception e) {
+            return ERROR_RESPONSE + e.getMessage();
         }
     }
 
-    public String deleteRow(int sheetIndex, List<Object> parameters) {
-        String response = "Not found";
+    public String update(int sheetIndex, List<Object> oldValues, List<Object> newValues) {
+        String response = NOT_FOUND;
+        File file = new File(fileName);
+        try (
+                FileInputStream fis = new FileInputStream(file);
+                Workbook workbook = new XSSFWorkbook(fis)
+        ) {
+            Sheet sheet = workbook.getSheetAt(sheetIndex);
+
+            for (int i = sheet.getLastRowNum(); i >= 0; i--) {
+                Row row = sheet.getRow(i);
+                if (row != null && updateRowIfExists(row, oldValues, newValues))
+                    response = SUCCESS;
+
+            }
+
+            // Write changes back to file
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                workbook.write(fos);
+            }
+            return response;
+
+        } catch (Exception e) {
+            return ERROR_RESPONSE + e.getMessage();
+        }
+    }
+
+
+
+    public String delete(int sheetIndex, List<Object> parameters) {
+        String response = NOT_FOUND;
         File file = new File(fileName);
         try (
                 FileInputStream fis = new FileInputStream(file);
@@ -103,7 +115,7 @@ public class Core {
             for (int i = sheet.getLastRowNum(); i >= 0; i--) {
                 Row row = sheet.getRow(i);
                 if (row != null && deleteRowIfExists(sheet, row, parameters))
-                    response = "Success";
+                    response = SUCCESS;
 
             }
 
@@ -113,8 +125,52 @@ public class Core {
             }
             return response;
 
-        } catch (IOException e) {
-            return "Error " + e.getMessage();
+        } catch (Exception e) {
+            return ERROR_RESPONSE + e.getMessage();
+        }
+    }
+
+    public String purge(int sheetIndex){
+        File file = new File(fileName);
+        try (
+                FileInputStream fis = new FileInputStream(file);
+                Workbook workbook = new XSSFWorkbook(fis)
+        ) {
+            Sheet sheet = workbook.getSheetAt(sheetIndex);
+
+
+            for (int i = sheet.getLastRowNum(); i > 0; i--)
+                deleteRowAndShift(sheet, sheet.getRow(i));
+
+
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                workbook.write(fos);
+            }
+            return SUCCESS;
+
+        } catch (Exception e) {
+            return ERROR_RESPONSE + e.getMessage();
+        }
+    }
+
+    private ExcelRow getExcelRow(Row row) {
+        ExcelRow excelRow = new ExcelRow();
+        for (int i = 0; i < row.getLastCellNum(); i++) {
+            excelRow.addData(getCellType(row.getCell(i)));
+        }
+        return excelRow;
+    }
+
+    private String getCellType(Cell cell) {
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return String.valueOf(cell.getNumericCellValue());
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+            default:
+                return null;
         }
     }
 
@@ -143,56 +199,8 @@ public class Core {
         }
     }
 
-    public String purge(int sheetIndex){
-        File file = new File(fileName);
-        try (
-                FileInputStream fis = new FileInputStream(file);
-                Workbook workbook = new XSSFWorkbook(fis)
-        ) {
-            Sheet sheet = workbook.getSheetAt(sheetIndex);
 
 
-            for (int i = sheet.getLastRowNum(); i > 0; i--)
-                deleteRowAndShift(sheet, sheet.getRow(i));
-
-
-            try (FileOutputStream fos = new FileOutputStream(file)) {
-                workbook.write(fos);
-            }
-            return "Success";
-
-        } catch (IOException e) {
-            return "Error " + e.getMessage();
-        }
-    }
-
-
-    public String update(int sheetIndex, List<Object> oldValues, List<Object> newValues) {
-        String response = "Not found";
-        File file = new File(fileName);
-        try (
-                FileInputStream fis = new FileInputStream(file);
-                Workbook workbook = new XSSFWorkbook(fis)
-        ) {
-            Sheet sheet = workbook.getSheetAt(sheetIndex);
-
-            for (int i = sheet.getLastRowNum(); i >= 0; i--) {
-                Row row = sheet.getRow(i);
-                if (row != null && updateRowIfExists(row, oldValues, newValues))
-                    response = "Success";
-
-            }
-
-            // Write changes back to file
-            try (FileOutputStream fos = new FileOutputStream(file)) {
-                workbook.write(fos);
-            }
-            return response;
-
-        } catch (IOException e) {
-            return "Error " + e.getMessage();
-        }
-    }
 
     private boolean updateRowIfExists(Row row, List<Object> oldValues,List<Object> newValues) {
         boolean found = true;

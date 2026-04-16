@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,24 +19,48 @@ class CoreTest {
     private Core core;
 
     @Test
-    void readUsersFromFile() throws IOException {
-        ExcelSheet result = core.readFromFile(SheetEnum.USERS.getId());
+    void readUsersFromFile() {
+        ExcelSheet result = core.read(SheetEnum.USERS.getId());
         assertNotNull(result);
     }
 
     @Test
-    void readTotalsFromFile() throws IOException {
-        ExcelSheet result = core.readFromFile(SheetEnum.TOTALS.getId());
+    void readUsersFromFileShouldFail()  {
+        assertNull(core.read(-1));
+    }
+
+    @Test
+    void readTotalsFromFile() {
+        ExcelSheet result = core.read(SheetEnum.TOTALS.getId());
         assertNotNull(result);
     }
     @Test
-    void readTranscationFromFile() throws IOException {
-        ExcelSheet result = core.readFromFile(SheetEnum.TRANSACTION.getId());
-        assertNotNull(result, "The transaction sheet should not be null");
+    void readTransactionFromFile() {
+        ExcelSheet result = core.read(SheetEnum.TRANSACTION.getId());
+        assertNotNull(result);
+
+        core.purge(SheetEnum.TRANSACTION.getId());
+        core.read(SheetEnum.TRANSACTION.getId());
+
+        assertEquals("{\"data\":[]}", result.sheetData());
+
+        List<Object> values = new ArrayList<>();
+        values.add(1);
+        values.add("01/01/1990");
+        values.add(1);
+        values.add(1.0);
+        values.add(Boolean.TRUE);
+
+        core.add(SheetEnum.TRANSACTION.getId(),values);
+        result = core.read(SheetEnum.TRANSACTION.getId());
+
+        assertNotNull(result);
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"date\":\"01/01/1990\",\"typeid\":\"1\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}", result.sheetData());
+
     }
     @Test
-    void readTypeFromFile() throws IOException {
-        ExcelSheet result = core.readFromFile(SheetEnum.TYPE.getId());
+    void readTypeFromFile() {
+        ExcelSheet result = core.read(SheetEnum.TYPE.getId());
         assertNotNull(result);
     }
 
@@ -45,6 +68,11 @@ class CoreTest {
     void purgeUsers() {
         String response = core.purge(SheetEnum.USERS.getId());
         assertEquals("Success", response);
+    }
+
+    @Test
+    void purgeUsersShouldFail() {
+        assertNotEquals("Success", core.purge(-1));
     }
 
     @Test
@@ -66,30 +94,39 @@ class CoreTest {
     }
 
     @Test
-    void addUsersToSheet() throws IOException {
+    void addUsersToSheet() {
         core.purge(SheetEnum.USERS.getId());
-        ExcelSheet result = core.readFromFile(SheetEnum.USERS.getId());
+        ExcelSheet result = core.read(SheetEnum.USERS.getId());
 
-        assertEquals("{ \"data\": []}", result.sheetData());
+        assertEquals("{\"data\":[]}", result.sheetData());
 
         List<Object> values = new ArrayList<>();
         values.add(1);
         values.add("test1");
         values.add("Pass2");
 
-        core.addToSheet(SheetEnum.USERS.getId(),values);
-        result = core.readFromFile(SheetEnum.USERS.getId());
+        core.add(SheetEnum.USERS.getId(),values);
+        result = core.read(SheetEnum.USERS.getId());
 
         assertNotNull(result);
-        assertEquals("{ \"data\": [{\"id\":\"1\",\"username\":\"test1\",\"password\":\"Pass2\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"id\":\"1\",\"username\":\"test1\",\"password\":\"Pass2\"}]}", result.sheetData());
     }
 
     @Test
-    void addTotalsToSheet() throws IOException {
-        core.purge(SheetEnum.TOTALS.getId());
-        ExcelSheet result = core.readFromFile(SheetEnum.TOTALS.getId());
+    void addUsersToSheetShouldFail()  {
+        List<Object> values = new ArrayList<>();
+        values.add(1);
+        values.add("test1");
+        values.add("Pass2");
+        assertNotEquals("Success", core.add(-1,values));
+    }
 
-        assertEquals("{ \"data\": []}", result.sheetData());
+    @Test
+    void addTotalsToSheet() {
+        core.purge(SheetEnum.TOTALS.getId());
+        ExcelSheet result = core.read(SheetEnum.TOTALS.getId());
+
+        assertEquals("{\"data\":[]}", result.sheetData());
 
         List<Object> values = new ArrayList<>();
         values.add(1);
@@ -97,19 +134,19 @@ class CoreTest {
         values.add("Test");
         values.add(1.0);
 
-        core.addToSheet(SheetEnum.TOTALS.getId(),values);
-        result = core.readFromFile(SheetEnum.TOTALS.getId());
+        core.add(SheetEnum.TOTALS.getId(),values);
+        result = core.read(SheetEnum.TOTALS.getId());
 
         assertNotNull(result);
-        assertEquals("{ \"data\": [{\"userId\":\"1\",\"date\":\"01/01/1990\",\"name\":\"Test\",\"value\":\"1.0\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"date\":\"01/01/1990\",\"name\":\"Test\",\"value\":\"1.0\"}]}", result.sheetData());
     }
 
     @Test
-    void addTransactionToSheet() throws IOException {
+    void addTransactionToSheet() {
         core.purge(SheetEnum.TRANSACTION.getId());
-        ExcelSheet result = core.readFromFile(SheetEnum.TRANSACTION.getId());
+        ExcelSheet result = core.read(SheetEnum.TRANSACTION.getId());
 
-        assertEquals("{ \"data\": []}", result.sheetData());
+        assertEquals("{\"data\":[]}", result.sheetData());
 
         List<Object> values = new ArrayList<>();
         values.add(1);
@@ -118,29 +155,29 @@ class CoreTest {
         values.add(1.0);
         values.add(Boolean.TRUE);
 
-        core.addToSheet(SheetEnum.TRANSACTION.getId(),values);
-        result = core.readFromFile(SheetEnum.TRANSACTION.getId());
+        core.add(SheetEnum.TRANSACTION.getId(),values);
+        result = core.read(SheetEnum.TRANSACTION.getId());
 
         assertNotNull(result);
-        assertEquals("{ \"data\": [{\"userId\":\"1\",\"date\":\"01/01/1990\",\"typeid\":\"1\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"date\":\"01/01/1990\",\"typeid\":\"1\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}", result.sheetData());
     }
 
     @Test
-    void addTypeToSheet() throws IOException {
+    void addTypeToSheet() {
         core.purge(SheetEnum.TYPE.getId());
-        ExcelSheet result = core.readFromFile(SheetEnum.TYPE.getId());
+        ExcelSheet result = core.read(SheetEnum.TYPE.getId());
 
-        assertEquals("{ \"data\": []}", result.sheetData());
+        assertEquals("{\"data\":[]}", result.sheetData());
 
         List<Object> values = new ArrayList<>();
         values.add(1);
         values.add("Test");
 
-        core.addToSheet(SheetEnum.TYPE.getId(),values);
-        result = core.readFromFile(SheetEnum.TYPE.getId());
+        core.add(SheetEnum.TYPE.getId(),values);
+        result = core.read(SheetEnum.TYPE.getId());
 
         assertNotNull(result);
-        assertEquals("{ \"data\": [{\"userId\":\"1\",\"name\":\"Test\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"name\":\"Test\"}]}", result.sheetData());
     }
 
 
@@ -152,26 +189,26 @@ class CoreTest {
         values.add("Test");
         values.add("Pass");
 
-        core.addToSheet(SheetEnum.USERS.getId(),values);
-        ExcelSheet result = core.readFromFile(SheetEnum.USERS.getId());
+        core.add(SheetEnum.USERS.getId(),values);
+        ExcelSheet result = core.read(SheetEnum.USERS.getId());
         assertNotNull(result);
 
-        assertEquals("{ \"data\": [{\"id\":\"1\",\"username\":\"Test\",\"password\":\"Pass\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"id\":\"1\",\"username\":\"Test\",\"password\":\"Pass\"}]}", result.sheetData());
         List<Object> values1 = new ArrayList<>();
         values1.add(2);
         values1.add("Test2");
         values1.add("Pass2");
 
-        core.addToSheet(SheetEnum.USERS.getId(),values1);
-        result = core.readFromFile(SheetEnum.USERS.getId());
+        core.add(SheetEnum.USERS.getId(),values1);
+        result = core.read(SheetEnum.USERS.getId());
 
-        assertEquals("{ \"data\": [{\"id\":\"1\",\"username\":\"Test\",\"password\":\"Pass\"},{\"id\":\"2\",\"username\":\"Test2\",\"password\":\"Pass2\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"id\":\"1\",\"username\":\"Test\",\"password\":\"Pass\"},{\"id\":\"2\",\"username\":\"Test2\",\"password\":\"Pass2\"}]}", result.sheetData());
 
-        core.deleteRow(SheetEnum.USERS.getId(),values1);
+        core.delete(SheetEnum.USERS.getId(),values1);
 
-        result = core.readFromFile(SheetEnum.USERS.getId());
+        result = core.read(SheetEnum.USERS.getId());
 
-        assertEquals("{ \"data\": [{\"id\":\"1\",\"username\":\"Test\",\"password\":\"Pass\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"id\":\"1\",\"username\":\"Test\",\"password\":\"Pass\"}]}", result.sheetData());
 
     }
 
@@ -185,11 +222,11 @@ class CoreTest {
         values.add(1.0);
         values.add(Boolean.TRUE);
 
-        core.addToSheet(SheetEnum.TRANSACTION.getId(),values);
-        ExcelSheet result = core.readFromFile(SheetEnum.TRANSACTION.getId());
+        core.add(SheetEnum.TRANSACTION.getId(),values);
+        ExcelSheet result = core.read(SheetEnum.TRANSACTION.getId());
         assertNotNull(result);
 
-        assertEquals("{ \"data\": [{\"userId\":\"1\",\"date\":\"01/01/1990\",\"typeid\":\"1\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"date\":\"01/01/1990\",\"typeid\":\"1\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}", result.sheetData());
         List<Object> values1 = new ArrayList<>();
         values1.add(2);
         values1.add("02/01/1990");
@@ -197,17 +234,17 @@ class CoreTest {
         values1.add(2.0);
         values1.add(Boolean.FALSE);
 
-        core.addToSheet(SheetEnum.TRANSACTION.getId(),values1);
+        core.add(SheetEnum.TRANSACTION.getId(),values1);
 
-        result = core.readFromFile(SheetEnum.TRANSACTION.getId());
+        result = core.read(SheetEnum.TRANSACTION.getId());
 
-        assertEquals("{ \"data\": [{\"userId\":\"1\",\"date\":\"01/01/1990\",\"typeid\":\"1\",\"value\":\"1.0\",\"isRevenue\":\"true\"},{\"userId\":\"2\",\"date\":\"02/01/1990\",\"typeid\":\"2\",\"value\":\"2.0\",\"isRevenue\":\"false\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"date\":\"01/01/1990\",\"typeid\":\"1\",\"value\":\"1.0\",\"isRevenue\":\"true\"},{\"userId\":\"2\",\"date\":\"02/01/1990\",\"typeid\":\"2\",\"value\":\"2.0\",\"isRevenue\":\"false\"}]}", result.sheetData());
 
-        core.deleteRow(SheetEnum.TRANSACTION.getId(),values1);
+        core.delete(SheetEnum.TRANSACTION.getId(),values1);
 
-        result = core.readFromFile(SheetEnum.TRANSACTION.getId());
+        result = core.read(SheetEnum.TRANSACTION.getId());
 
-        assertEquals("{ \"data\": [{\"userId\":\"1\",\"date\":\"01/01/1990\",\"typeid\":\"1\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"date\":\"01/01/1990\",\"typeid\":\"1\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}", result.sheetData());
 
     }
 
@@ -219,28 +256,28 @@ class CoreTest {
         values.add("01/01/1990");
         values.add("cenas");
         values.add(1.0);
-        core.addToSheet(SheetEnum.TOTALS.getId(),values);
+        core.add(SheetEnum.TOTALS.getId(),values);
 
-        ExcelSheet result = core.readFromFile(SheetEnum.TOTALS.getId());
+        ExcelSheet result = core.read(SheetEnum.TOTALS.getId());
         assertNotNull(result);
-        assertEquals("{ \"data\": [{\"userId\":\"1\",\"date\":\"01/01/1990\",\"name\":\"cenas\",\"value\":\"1.0\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"date\":\"01/01/1990\",\"name\":\"cenas\",\"value\":\"1.0\"}]}", result.sheetData());
 
         List<Object> values1 = new ArrayList<>();
         values1.add(2);
         values1.add("02/01/1990");
         values1.add("cenas2");
         values1.add(2.0);
-        core.addToSheet(SheetEnum.TOTALS.getId(),values1);
+        core.add(SheetEnum.TOTALS.getId(),values1);
 
-        result = core.readFromFile(SheetEnum.TOTALS.getId());
+        result = core.read(SheetEnum.TOTALS.getId());
 
-        assertEquals("{ \"data\": [{\"userId\":\"1\",\"date\":\"01/01/1990\",\"name\":\"cenas\",\"value\":\"1.0\"},{\"userId\":\"2\",\"date\":\"02/01/1990\",\"name\":\"cenas2\",\"value\":\"2.0\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"date\":\"01/01/1990\",\"name\":\"cenas\",\"value\":\"1.0\"},{\"userId\":\"2\",\"date\":\"02/01/1990\",\"name\":\"cenas2\",\"value\":\"2.0\"}]}", result.sheetData());
 
-        core.deleteRow(SheetEnum.TOTALS.getId(),values1);
+        core.delete(SheetEnum.TOTALS.getId(),values1);
 
-        result = core.readFromFile(SheetEnum.TOTALS.getId());
+        result = core.read(SheetEnum.TOTALS.getId());
 
-        assertEquals("{ \"data\": [{\"userId\":\"1\",\"date\":\"01/01/1990\",\"name\":\"cenas\",\"value\":\"1.0\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"date\":\"01/01/1990\",\"name\":\"cenas\",\"value\":\"1.0\"}]}", result.sheetData());
 
     }
 
@@ -251,26 +288,154 @@ class CoreTest {
         values.add(1);
         values.add("Test");
 
-        core.addToSheet(SheetEnum.TYPE.getId(),values);
-        ExcelSheet result = core.readFromFile(SheetEnum.TYPE.getId());
+        core.add(SheetEnum.TYPE.getId(),values);
+        ExcelSheet result = core.read(SheetEnum.TYPE.getId());
         assertNotNull(result);
-        assertEquals("{ \"data\": [{\"userId\":\"1\",\"name\":\"Test\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"name\":\"Test\"}]}", result.sheetData());
 
         List<Object> values1 = new ArrayList<>();
         values1.add(2);
         values1.add("Test1");
 
-        core.addToSheet(SheetEnum.TYPE.getId(),values1);
+        core.add(SheetEnum.TYPE.getId(),values1);
 
-        result = core.readFromFile(SheetEnum.TYPE.getId());
+        result = core.read(SheetEnum.TYPE.getId());
 
-        assertEquals("{ \"data\": [{\"userId\":\"1\",\"name\":\"Test\"},{\"userId\":\"2\",\"name\":\"Test1\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"name\":\"Test\"},{\"userId\":\"2\",\"name\":\"Test1\"}]}", result.sheetData());
 
-        core.deleteRow(SheetEnum.TYPE.getId(),values1);
+        core.delete(SheetEnum.TYPE.getId(),values1);
 
-        result = core.readFromFile(SheetEnum.TYPE.getId());
+        result = core.read(SheetEnum.TYPE.getId());
 
-        assertEquals("{ \"data\": [{\"userId\":\"1\",\"name\":\"Test\"}]}", result.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"name\":\"Test\"}]}", result.sheetData());
 
     }
+
+    @Test
+    void deleteRowShouldFail()  {
+        List<Object> values = new ArrayList<>();
+        values.add(1);
+        values.add("test1");
+        values.add("Pass2");
+        assertNotEquals("Success", core.delete(-1,values));
+    }
+
+    @Test
+    void updateUserRow() {
+        core.purge(SheetEnum.USERS.getId());
+        List<Object> values = new ArrayList<>();
+        values.add(1);
+        values.add("Test");
+        values.add("Pass");
+
+        core.add(SheetEnum.USERS.getId(),values);
+        ExcelSheet result = core.read(SheetEnum.USERS.getId());
+        assertNotNull(result);
+
+        assertEquals("{\"data\":[{\"id\":\"1\",\"username\":\"Test\",\"password\":\"Pass\"}]}", result.sheetData());
+        List<Object> newValues = new ArrayList<>();
+        newValues.add(2);
+        newValues.add("Test2");
+        newValues.add("Pass2");
+
+        core.update(SheetEnum.USERS.getId(),values,newValues);
+        result = core.read(SheetEnum.USERS.getId());
+
+        assertEquals("{\"data\":[{\"id\":\"2\",\"username\":\"Test2\",\"password\":\"Pass2\"}]}", result.sheetData());
+
+    }
+
+    @Test
+    void updateTransactionRow() {
+        core.purge(SheetEnum.TRANSACTION.getId());
+        List<Object> values = new ArrayList<>();
+        values.add(1);
+        values.add("01/01/1990");
+        values.add(1);
+        values.add(1.0);
+        values.add(Boolean.TRUE);
+
+        core.add(SheetEnum.TRANSACTION.getId(),values);
+        ExcelSheet result = core.read(SheetEnum.TRANSACTION.getId());
+        assertNotNull(result);
+
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"date\":\"01/01/1990\",\"typeid\":\"1\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}", result.sheetData());
+        List<Object> values1 = new ArrayList<>();
+        values1.add(2);
+        values1.add("02/01/1990");
+        values1.add(2);
+        values1.add(2.0);
+        values1.add(Boolean.FALSE);
+
+        core.update(SheetEnum.TRANSACTION.getId(),values, values1);
+
+        result = core.read(SheetEnum.TRANSACTION.getId());
+
+        assertEquals("{\"data\":[{\"userId\":\"2\",\"date\":\"02/01/1990\",\"typeid\":\"2\",\"value\":\"2.0\",\"isRevenue\":\"false\"}]}", result.sheetData());
+ }
+
+    @Test
+    void updateTotalsRow() {
+        core.purge(SheetEnum.TOTALS.getId());
+        List<Object> values = new ArrayList<>();
+        values.add(1);
+        values.add("01/01/1990");
+        values.add("cenas");
+        values.add(1.0);
+        core.add(SheetEnum.TOTALS.getId(),values);
+
+        ExcelSheet result = core.read(SheetEnum.TOTALS.getId());
+        assertNotNull(result);
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"date\":\"01/01/1990\",\"name\":\"cenas\",\"value\":\"1.0\"}]}", result.sheetData());
+
+        List<Object> values1 = new ArrayList<>();
+        values1.add(2);
+        values1.add("02/01/1990");
+        values1.add("cenas2");
+        values1.add(2.0);
+        core.update(SheetEnum.TOTALS.getId(),values, values1);
+
+        result = core.read(SheetEnum.TOTALS.getId());
+
+        assertEquals("{\"data\":[{\"userId\":\"2\",\"date\":\"02/01/1990\",\"name\":\"cenas2\",\"value\":\"2.0\"}]}", result.sheetData());
+
+    }
+
+    @Test
+    void updateTypeRow() {
+        core.purge(SheetEnum.TYPE.getId());
+        List<Object> values = new ArrayList<>();
+        values.add(1);
+        values.add("Test");
+
+        core.add(SheetEnum.TYPE.getId(),values);
+        ExcelSheet result = core.read(SheetEnum.TYPE.getId());
+        assertNotNull(result);
+        assertEquals("{\"data\":[{\"userId\":\"1\",\"name\":\"Test\"}]}", result.sheetData());
+
+        List<Object> values1 = new ArrayList<>();
+        values1.add(2);
+        values1.add("Test1");
+
+        core.update(SheetEnum.TYPE.getId(),values, values1);
+
+        result = core.read(SheetEnum.TYPE.getId());
+
+        assertEquals("{\"data\":[{\"userId\":\"2\",\"name\":\"Test1\"}]}", result.sheetData());
+
+    }
+
+    @Test
+    void updateShouldFail()  {
+        List<Object> values = new ArrayList<>();
+        values.add(1);
+        values.add("test1");
+        values.add("Pass2");
+
+        List<Object> values1 = new ArrayList<>();
+        values1.add(2);
+        values1.add("Test1");
+        assertNotEquals("Success", core.update(-1,values, values1));
+    }
+
 }

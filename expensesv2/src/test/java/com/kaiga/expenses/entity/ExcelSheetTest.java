@@ -45,7 +45,7 @@ class ExcelSheetTest {
         excelSheet.addRow(row);
         excelSheet.addRow(row1);
         excelSheet.setHeaders();
-        assertEquals("{ \"data\": [{\"userId\":\"1.0\",\"date\":\"12.0\",\"typeid\":\"1.0\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}",excelSheet.sheetData());
+        assertEquals("{\"data\":[{\"userId\":\"1.0\",\"date\":\"12.0\",\"typeid\":\"1.0\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}",excelSheet.sheetData());
     }
 
     @Test

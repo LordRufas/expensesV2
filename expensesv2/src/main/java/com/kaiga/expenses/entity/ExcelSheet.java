@@ -36,7 +36,7 @@ public class ExcelSheet {
 
     public String sheetData() {
         StringBuilder data = new StringBuilder();
-        data.append("{ \"data\": [");
+        data.append("{\"data\":[");
         if (!this.headers.getData().isEmpty()) {
             for (ExcelRow excelRow : this.excelRows) {
                 data.append("{");
