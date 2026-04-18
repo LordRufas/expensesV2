@@ -28,6 +28,12 @@ public class UserController {
         return user.getAllUsers();
     }
 
+    @GetMapping("/Login")
+    public String login(@RequestParam String username, @RequestParam String password) {
+        return user.login(username, password);
+    }
+
+
 
 
 }

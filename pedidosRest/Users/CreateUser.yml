@@ -5,7 +5,14 @@ info:
 
 http:
   method: POST
-  url: http://localhost:8080/insert
+  url: http://localhost:8080/createUser?username=admin1&password=admin
+  params:
+    - name: username
+      value: admin1
+      type: query
+    - name: password
+      value: admin
+      type: query
   auth: inherit
 
 settings:

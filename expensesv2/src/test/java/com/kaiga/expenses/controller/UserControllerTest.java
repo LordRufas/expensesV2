@@ -21,13 +21,40 @@ class UserControllerTest {
     @Test
     void getAllUsers() {
         user.purgeUsers();
-        assertEquals("{\"data\":[]}",userController.getAllUsers());
+        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[]}",userController.getAllUsers());
     }
     @Test
     void createNewUser() {
         user.purgeUsers();
-        assertEquals("{\"data\":[]}",userController.getAllUsers());
+        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[]}",userController.getAllUsers());
         userController.createUser("user", "pass");
-        assertEquals("{\"data\":[{\"id\":\"1\",\"username\":\"user\",\"password\":\"pass\"}]}",userController.getAllUsers());
+        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[{\"password\":\"pass\",\"id\":\"1\",\"username\":\"user\"}]}",userController.getAllUsers());
+    }
+
+    @Test
+    void loginTestShouldWork() {
+        user.purgeUsers();
+        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[]}",userController.getAllUsers());
+        userController.createUser("user", "pass");
+        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[{\"password\":\"pass\",\"id\":\"1\",\"username\":\"user\"}]}",userController.getAllUsers());
+        assertEquals("{\"response\":\"Success\",\"statusCode\":\"200\",\"userId\":\"1\"}",userController.login("user", "pass"));
+    }
+
+    @Test
+    void loginIncorrectPassword() {
+        user.purgeUsers();
+        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[]}",userController.getAllUsers());
+        userController.createUser("user", "pass");
+        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[{\"password\":\"pass\",\"id\":\"1\",\"username\":\"user\"}]}",userController.getAllUsers());
+        assertEquals("{\"response\":\"Password incorrect\",\"statusCode\":\"401\"}",userController.login("user", "pass1"));
+    }
+
+    @Test
+    void loginUserNotFound() {
+        user.purgeUsers();
+        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[]}",userController.getAllUsers());
+        userController.createUser("user", "pass");
+        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[{\"password\":\"pass\",\"id\":\"1\",\"username\":\"user\"}]}",userController.getAllUsers());
+        assertEquals("{\"response\":\"User not found\",\"statusCode\":\"404\"}",userController.login("user1", "pass"));
     }
 }

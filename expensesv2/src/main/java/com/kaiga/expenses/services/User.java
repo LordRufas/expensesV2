@@ -3,10 +3,10 @@ package com.kaiga.expenses.services;
 import com.kaiga.expenses.entity.ExcelRow;
 import com.kaiga.expenses.entity.ExcelSheet;
 import com.kaiga.expenses.repository.Core;
+import com.kaiga.expenses.utilities.Utilities;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.kaiga.expenses.entity.SheetEnum.*;
 
@@ -40,11 +40,17 @@ public class User {
         values.add(username);
         values.add(password);
 
-        return core.add(USERS.getId(), values);
+        String response =  core.add(USERS.getId(), values);
+        if(response.equals("Success"))
+            return Utilities.createJsonResponse("OK", "200",  null);
+        else
+            return Utilities.createJsonResponse("An error occurred", "400", null);
+
     }
 
     public String getAllUsers(){
-        return core.read(USERS.getId()).sheetData();
+        Map<String, Object> response = core.read(USERS.getId()).sheetData();
+        return Utilities.createJsonResponse("OK", "200",  response);
     }
 
     public void purgeUsers(){
@@ -52,5 +58,30 @@ public class User {
     }
 
 
+    public String login(String username, String password) {
+        String response = "User not found";
+        String userId = "";
+        boolean found = false;
+        ExcelSheet sheet = core.read(USERS.getId());
+        for(ExcelRow row : sheet.getExcelRows()){
+            if(row.getData().get(1).equals(username)){
+                found = true;
+                if(row.getData().get(2).equals(password)){
+                    response = "Success";
+                    userId = row.getData().get(0);
+                }
+                else
+                    response = "Password incorrect";
+            }
+            if(found)
+                break;
+        }
+        if(response.equals("User not found"))
+            return Utilities.createJsonResponse(response, "404", null);
+        else if(response.equals("Password incorrect"))
+            return Utilities.createJsonResponse(response, "401", null);
+        else
+            return Utilities.createJsonResponse(response, "200",  Map.of("userId", userId ));
 
+    }
 }
