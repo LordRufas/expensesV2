@@ -37,7 +37,7 @@ class UserControllerTest {
         assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[]}",userController.getAllUsers());
         userController.createUser("user", "pass");
         assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[{\"password\":\"pass\",\"id\":\"1\",\"username\":\"user\"}]}",userController.getAllUsers());
-        assertEquals("{\"response\":\"Success\",\"statusCode\":\"200\",\"userId\":\"1\"}",userController.login("user", "pass"));
+        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[{\"userId\":\"1\"}]}",userController.login("user", "pass"));
     }
 
     @Test

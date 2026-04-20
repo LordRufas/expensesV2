@@ -6,6 +6,7 @@ import com.kaiga.expenses.repository.Core;
 import com.kaiga.expenses.utilities.Utilities;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static com.kaiga.expenses.entity.SheetEnum.*;
@@ -60,15 +61,15 @@ public class User {
 
     public String login(String username, String password) {
         String response = "User not found";
-        String userId = "";
         boolean found = false;
         ExcelSheet sheet = core.read(USERS.getId());
+        ExcelRow userRow = new ExcelRow();
         for(ExcelRow row : sheet.getExcelRows()){
             if(row.getData().get(1).equals(username)){
                 found = true;
                 if(row.getData().get(2).equals(password)){
                     response = "Success";
-                    userId = row.getData().get(0);
+                    userRow = row;
                 }
                 else
                     response = "Password incorrect";
@@ -76,12 +77,24 @@ public class User {
             if(found)
                 break;
         }
+
         if(response.equals("User not found"))
             return Utilities.createJsonResponse(response, "404", null);
         else if(response.equals("Password incorrect"))
             return Utilities.createJsonResponse(response, "401", null);
-        else
-            return Utilities.createJsonResponse(response, "200",  Map.of("userId", userId ));
+        else {
+
+            List<Map<String, String>> dataList = new ArrayList<>();
+            Map<String, String> info = new HashMap<>();
+            info.put("userId", userRow.getData().get(0));
+            dataList.add(info);
+
+            Map<String, Object> root = new HashMap<>();
+            root.put("response", "ok");
+            root.put("data", dataList);
+
+            return Utilities.createJsonResponse("OK", "200",root );
+        }
 
     }
 }
