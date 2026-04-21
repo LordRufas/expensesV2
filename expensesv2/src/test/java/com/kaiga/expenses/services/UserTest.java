@@ -15,30 +15,25 @@ class UserTest {
     @Test
     void purgeUsers(){
         user.purgeUsers();
-        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[]}",user.getAllUsers());
+        assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
     }
 
     @Test
-    void getAllUsers() {
-        user.purgeUsers();
-        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[]}",user.getAllUsers());
-    }
-    @Test
     void createNewUser() {
         user.purgeUsers();
-        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[]}",user.getAllUsers());
-        user.createNewUser("user", "pass");
-        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[{\"password\":\"pass\",\"id\":\"1\",\"username\":\"user\"}]}",user.getAllUsers());
+        assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
+        user.createNewUser("user",  "pass");
+        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
     }
 
     @Test
     void create2NewUser() {
         user.purgeUsers();
-        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[]}",user.getAllUsers());
-        user.createNewUser("user", "pass");
-        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[{\"password\":\"pass\",\"id\":\"1\",\"username\":\"user\"}]}",user.getAllUsers());
-        user.createNewUser("user1", "pass1");
-        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[{\"password\":\"pass\",\"id\":\"1\",\"username\":\"user\"},{\"password\":\"pass1\",\"id\":\"2\",\"username\":\"user1\"}]}",user.getAllUsers());
+        assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
+        user.createNewUser("user",  "pass");
+        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
+        user.createNewUser("user1",  "pass1");
+        assertEquals("{data=[{password=pass, id=1, username=user}, {password=pass1, id=2, username=user1}]}", user.getAllUsers().getResponse().toString());
     }
 
 

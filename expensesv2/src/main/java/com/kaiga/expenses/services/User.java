@@ -1,9 +1,9 @@
 package com.kaiga.expenses.services;
 
+import com.kaiga.expenses.entity.BaseResponse;
 import com.kaiga.expenses.entity.ExcelRow;
 import com.kaiga.expenses.entity.ExcelSheet;
 import com.kaiga.expenses.repository.Core;
-import com.kaiga.expenses.utilities.Utilities;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Array;
@@ -33,7 +33,7 @@ public class User {
         return id;
     }
 
-    public String createNewUser(String username, String password) {
+    public BaseResponse createNewUser(String username, String password) {
         int id = getLatestId();
 
         List<Object> values = new ArrayList<>();
@@ -43,15 +43,15 @@ public class User {
 
         String response =  core.add(USERS.getId(), values);
         if(response.equals("Success"))
-            return Utilities.createJsonResponse("OK", "200",  null);
+            return new BaseResponse("OK", 200);
         else
-            return Utilities.createJsonResponse("An error occurred", "400", null);
+            return new BaseResponse("An error occurred", 200);
 
     }
 
-    public String getAllUsers(){
+    public BaseResponse getAllUsers(){
         Map<String, Object> response = core.read(USERS.getId()).sheetData();
-        return Utilities.createJsonResponse("OK", "200",  response);
+        return new BaseResponse("OK", 200,  response);
     }
 
     public void purgeUsers(){
@@ -59,7 +59,7 @@ public class User {
     }
 
 
-    public String login(String username, String password) {
+    public BaseResponse login(String username, String password) {
         String response = "User not found";
         boolean found = false;
         ExcelSheet sheet = core.read(USERS.getId());
@@ -79,21 +79,13 @@ public class User {
         }
 
         if(response.equals("User not found"))
-            return Utilities.createJsonResponse(response, "404", null);
+            return new BaseResponse(response, 404, null);
         else if(response.equals("Password incorrect"))
-            return Utilities.createJsonResponse(response, "401", null);
+            return new BaseResponse(response, 401, null);
         else {
-
-            List<Map<String, String>> dataList = new ArrayList<>();
-            Map<String, String> info = new HashMap<>();
+            Map<String, Object> info = new HashMap<>();
             info.put("userId", userRow.getData().get(0));
-            dataList.add(info);
-
-            Map<String, Object> root = new HashMap<>();
-            root.put("response", "ok");
-            root.put("data", dataList);
-
-            return Utilities.createJsonResponse("OK", "200",root );
+            return new BaseResponse("OK", 200,info );
         }
 
     }

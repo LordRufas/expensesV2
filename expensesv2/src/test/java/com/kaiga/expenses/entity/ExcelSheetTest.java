@@ -1,6 +1,6 @@
 package com.kaiga.expenses.entity;
 
-import com.kaiga.expenses.utilities.Utilities;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +46,7 @@ class ExcelSheetTest {
         excelSheet.addRow(row);
         excelSheet.addRow(row1);
         excelSheet.setHeaders();
-        assertEquals("{\"response\":\"ok\",\"statusCode\":\"200\",\"data\":[{\"date\":\"01/01/1990\",\"typeId\":\"1.0\",\"userId\":\"1.0\",\"value\":\"1.0\",\"isRevenue\":\"true\"}]}", Utilities.createJsonResponse("OK", "200",excelSheet.sheetData()));
+        assertEquals("{data=[{date=01/01/1990, typeId=1.0, userId=1.0, value=1.0, isRevenue=true}]}", excelSheet.sheetData().toString().toString());
     }
 
     @Test
