@@ -10,14 +10,10 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.util.List;
 
+import static com.kaiga.expenses.entity.DataBaseResponse.*;
+
 @Component
 public class Core {
-
-    private static final String SUCCESS = "Success";
-
-    private static final String NOT_FOUND = "Data not found";
-    private static final String ERROR_RESPONSE = "An error has occurred: ";
-
 
     @Value("${app.repositoryFileName}")
     private String fileName;

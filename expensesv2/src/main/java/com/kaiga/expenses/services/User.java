@@ -5,6 +5,7 @@ import com.kaiga.expenses.entity.ExcelRow;
 import com.kaiga.expenses.entity.ExcelSheet;
 import com.kaiga.expenses.repository.Core;
 import org.springframework.stereotype.Component;
+import static com.kaiga.expenses.entity.DataBaseResponse.*;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -42,7 +43,7 @@ public class User {
         values.add(password);
 
         String response =  core.add(USERS.getId(), values);
-        if(response.equals("Success"))
+        if(response.equals(SUCCESS))
             return new BaseResponse("OK", 200);
         else
             return new BaseResponse("An error occurred", 200);
