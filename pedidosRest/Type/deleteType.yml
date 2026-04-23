@@ -1,0 +1,18 @@
+info:
+  name: deleteType
+  type: http
+  seq: 5
+
+http:
+  method: PATCH
+  url: http://localhost:8080/deleteTypesByUser
+  body:
+    type: json
+    data: '{"id":2, "name":"test"}'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

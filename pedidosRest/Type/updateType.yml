@@ -1,0 +1,18 @@
+info:
+  name: updateType
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: http://localhost:8080/updateTypesByUser
+  body:
+    type: json
+    data: '{"id":3, "oldName":"test", "newName":"teste1"}'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
