@@ -56,7 +56,7 @@ class CoreTest {
         result = core.read(SheetEnum.TRANSACTION.getId());
 
         assertNotNull(result);
-        assertEquals("{data=[{date=01/01/1990, typeId=1, userId=1, value=1.0, isRevenue=true}]}",  result.sheetData().toString());
+        assertEquals("{data=[{date=01/01/1990, typeName=1, userId=1, value=1.0, isRevenue=true}]}",  result.sheetData().toString());
 
     }
     @Test
@@ -161,7 +161,7 @@ class CoreTest {
 
         core.add(SheetEnum.TRANSACTION.getId(), values);
 
-        assertEquals("{data=[{date=01/01/1990, typeId=1, userId=1, value=1.0, isRevenue=true}]}", 
+        assertEquals("{data=[{date=01/01/1990, typeName=1, userId=1, value=1.0, isRevenue=true}]}", 
                 core.read(SheetEnum.TRANSACTION.getId()).sheetData().toString());
     }
 
@@ -232,7 +232,7 @@ class CoreTest {
         assertNotNull(result);
         
 
-        assertEquals("{data=[{date=01/01/1990, typeId=1, userId=1, value=1.0, isRevenue=true}]}", result.sheetData().toString());
+        assertEquals("{data=[{date=01/01/1990, typeName=1, userId=1, value=1.0, isRevenue=true}]}", result.sheetData().toString());
         List<Object> values1 = new ArrayList<>();
         values1.add(2);
         values1.add("02/01/1990");
@@ -244,13 +244,13 @@ class CoreTest {
 
         result = core.read(SheetEnum.TRANSACTION.getId());
 
-        assertEquals("{data=[{date=01/01/1990, typeId=1, userId=1, value=1.0, isRevenue=true}, {date=02/01/1990, typeId=2, userId=2, value=2.0, isRevenue=false}]}", result.sheetData().toString());
+        assertEquals("{data=[{date=01/01/1990, typeName=1, userId=1, value=1.0, isRevenue=true}, {date=02/01/1990, typeName=2, userId=2, value=2.0, isRevenue=false}]}", result.sheetData().toString());
 
         core.delete(SheetEnum.TRANSACTION.getId(), values1);
 
         result = core.read(SheetEnum.TRANSACTION.getId());
 
-        assertEquals("{data=[{date=01/01/1990, typeId=1, userId=1, value=1.0, isRevenue=true}]}", result.sheetData().toString());
+        assertEquals("{data=[{date=01/01/1990, typeName=1, userId=1, value=1.0, isRevenue=true}]}", result.sheetData().toString());
 
     }
 
@@ -372,7 +372,7 @@ class CoreTest {
 
         
 
-        assertEquals("{data=[{date=01/01/1990, typeId=1, userId=1, value=1.0, isRevenue=true}]}", result.sheetData().toString());
+        assertEquals("{data=[{date=01/01/1990, typeName=1, userId=1, value=1.0, isRevenue=true}]}", result.sheetData().toString());
         List<Object> values1 = new ArrayList<>();
         values1.add(2);
         values1.add("02/01/1990");
@@ -384,7 +384,7 @@ class CoreTest {
 
         result = core.read(SheetEnum.TRANSACTION.getId());
 
-        assertEquals("{data=[{date=02/01/1990, typeId=2, userId=2, value=2.0, isRevenue=false}]}", result.sheetData().toString());
+        assertEquals("{data=[{date=02/01/1990, typeName=2, userId=2, value=2.0, isRevenue=false}]}", result.sheetData().toString());
  }
 
     @Test

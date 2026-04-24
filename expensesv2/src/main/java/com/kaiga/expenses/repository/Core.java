@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.util.List;
 
-import static com.kaiga.expenses.entity.DataBaseResponse.*;
+import static com.kaiga.expenses.entity.GeneralResponses.*;
 
 @Component
 public class Core {
@@ -216,5 +216,28 @@ public class Core {
 
 
         return found;
+    }
+
+
+    public boolean rowExists(int sheetNumber, List<String> elements, List<String> headerNames){
+        boolean exist = false;
+        ExcelSheet sheet = read(sheetNumber);
+        for(ExcelRow row : sheet.getExcelRows()){
+            int iterator = 0 ;
+            for(int i = 0; i< row.getData().size(); i++) {
+                if (headerNames.contains(sheet.getHeaders().getData().get(i))) {
+                    if (!elements.get(iterator).equals(row.getData().get(i))) {
+                        break;
+                    }
+                    if (i >= headerNames.size() - 1) {
+                        exist = true;
+                    }
+                    iterator ++;
+                }
+
+            }
+        }
+
+        return exist;
     }
 }

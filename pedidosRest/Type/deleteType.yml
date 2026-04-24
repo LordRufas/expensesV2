@@ -8,7 +8,7 @@ http:
   url: http://localhost:8080/deleteTypesByUser
   body:
     type: json
-    data: '{"id":2, "name":"test"}'
+    data: '{"id":2, "name":"batata"}'
   auth: inherit
 
 settings:

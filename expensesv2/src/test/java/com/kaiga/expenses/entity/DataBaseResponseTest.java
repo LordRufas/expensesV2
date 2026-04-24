@@ -10,7 +10,7 @@ class DataBaseResponseTest {
 
     @Test
     void testDataBaseResponse(){
-        DataBaseResponse test = new DataBaseResponse();
+        GeneralResponses test = new GeneralResponses();
         assertNotNull(test);
     }
 }

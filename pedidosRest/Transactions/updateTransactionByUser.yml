@@ -1,0 +1,29 @@
+info:
+  name: updateTransactionByUser
+  type: http
+  seq: 5
+
+http:
+  method: PATCH
+  url: http://localhost:8080/updateTransactionByUser
+  body:
+    type: json
+    data: |-
+      {
+        "id": 0,
+        "oldDate": "01/01/1999",
+        "oldType": "batata0",
+        "oldValue": 1.0,
+        "oldIsRevenue": true,
+        "newDate": "01/01/1999",
+        "newType": "batata01",
+        "newValue": 1.0,
+        "newIsRevenue": false
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

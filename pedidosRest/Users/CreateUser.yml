@@ -5,13 +5,13 @@ info:
 
 http:
   method: POST
-  url: http://localhost:8080/createUser?username=admin1&password=admin
+  url: http://localhost:8080/createUser?username=admin1&password=admin12
   params:
     - name: username
       value: admin1
       type: query
     - name: password
-      value: admin
+      value: admin12
       type: query
   auth: inherit
 

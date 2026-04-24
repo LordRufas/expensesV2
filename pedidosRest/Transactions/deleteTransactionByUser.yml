@@ -1,0 +1,18 @@
+info:
+  name: deleteTransactionByUser
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: http://localhost:8080/deleteTransactionByUser
+  body:
+    type: json
+    data: '{"id":0,"date":"01/01/1999","typeName":"batata0",  "value":1.0, "isRevenue":false}'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

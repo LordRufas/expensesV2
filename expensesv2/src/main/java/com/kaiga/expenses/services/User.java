@@ -5,9 +5,8 @@ import com.kaiga.expenses.entity.ExcelRow;
 import com.kaiga.expenses.entity.ExcelSheet;
 import com.kaiga.expenses.repository.Core;
 import org.springframework.stereotype.Component;
-import static com.kaiga.expenses.entity.DataBaseResponse.*;
+import static com.kaiga.expenses.entity.GeneralResponses.*;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static com.kaiga.expenses.entity.SheetEnum.*;
@@ -46,7 +45,7 @@ public class User {
         if(response.equals(SUCCESS))
             return new BaseResponse("OK", 200);
         else
-            return new BaseResponse("An error occurred", 200);
+            return new BaseResponse(ERROR_MESSAGE + response, 200);
 
     }
 
@@ -61,7 +60,7 @@ public class User {
 
 
     public BaseResponse login(String username, String password) {
-        String response = "User not found";
+        String response = USER_NOT_FOUND;
         boolean found = false;
         ExcelSheet sheet = core.read(USERS.getId());
         ExcelRow userRow = new ExcelRow();
@@ -69,19 +68,19 @@ public class User {
             if(row.getData().get(1).equals(username)){
                 found = true;
                 if(row.getData().get(2).equals(password)){
-                    response = "Success";
+                    response = SUCCESS;
                     userRow = row;
                 }
                 else
-                    response = "Password incorrect";
+                    response = PASSWORD_INCORRECT;
             }
             if(found)
                 break;
         }
 
-        if(response.equals("User not found"))
+        if(response.equals(USER_NOT_FOUND))
             return new BaseResponse(response, 404, null);
-        else if(response.equals("Password incorrect"))
+        else if(response.equals(PASSWORD_INCORRECT))
             return new BaseResponse(response, 401, null);
         else {
             Map<String, Object> info = new HashMap<>();

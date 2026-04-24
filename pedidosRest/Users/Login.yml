@@ -5,13 +5,13 @@ info:
 
 http:
   method: GET
-  url: http://localhost:8080/Login?username=admin1&password=admin
+  url: http://localhost:8080/Login?username=admin&password=admin1
   params:
     - name: username
-      value: admin1
+      value: admin
       type: query
     - name: password
-      value: admin
+      value: admin1
       type: query
   auth: inherit
 

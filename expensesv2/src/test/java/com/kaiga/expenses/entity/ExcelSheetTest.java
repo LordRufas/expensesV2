@@ -34,7 +34,7 @@ class ExcelSheetTest {
         ExcelRow row = new ExcelRow();
         row.addData("userId");
         row.addData("date");
-        row.addData("typeId");
+        row.addData("typeName");
         row.addData("value");
         row.addData("isRevenue");
         ExcelRow row1 = new ExcelRow();
@@ -46,7 +46,7 @@ class ExcelSheetTest {
         excelSheet.addRow(row);
         excelSheet.addRow(row1);
         excelSheet.setHeaders();
-        assertEquals("{data=[{date=01/01/1990, typeId=1.0, userId=1.0, value=1.0, isRevenue=true}]}", excelSheet.sheetData().toString().toString());
+        assertEquals("{data=[{date=01/01/1990, typeName=1.0, userId=1.0, value=1.0, isRevenue=true}]}", excelSheet.sheetData().toString().toString());
     }
 
     @Test
@@ -55,7 +55,7 @@ class ExcelSheetTest {
         ExcelRow row = new ExcelRow();
         row.addData("userid");
         row.addData("date");
-        row.addData("typeId");
+        row.addData("typeName");
         row.addData("value");
         row.addData("isRevenue");
         excelSheet.addRow(row);
@@ -70,7 +70,7 @@ class ExcelSheetTest {
         ExcelRow row = new ExcelRow();
         row.addData("userid");
         row.addData("date");
-        row.addData("typeId");
+        row.addData("typeName");
         row.addData("value");
         row.addData("isRevenue");
         excelSheet.addRow(row);

@@ -1,0 +1,31 @@
+info:
+  name: addTransaction
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:8080/addTransaction?userId=1&date=01/01/1999&typeName=a&value=1.0&isRevenue=false
+  params:
+    - name: userId
+      value: "1"
+      type: query
+    - name: date
+      value: 01/01/1999
+      type: query
+    - name: typeName
+      value: a
+      type: query
+    - name: value
+      value: "1.0"
+      type: query
+    - name: isRevenue
+      value: "false"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,11 +1,11 @@
 info:
-  name: CoreDelete
+  name: getAllTotals
   type: http
   seq: 1
 
 http:
-  method: PATCH
-  url: http://localhost:8080/delete
+  method: GET
+  url: http://localhost:8080/getAllTotals
   auth: inherit
 
 settings:
