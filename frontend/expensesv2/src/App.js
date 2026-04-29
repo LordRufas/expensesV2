@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { LoginPage } from './js/loginPage';
 import { MainPage } from './js/mainPage';
+import { AdminPage } from './js/adminPage';
+import { HistoryPage } from './js/historyPage';
+import { NewUserPage } from './js/newUser';
 
 export default function App() {
   const [page, setPage] = useState('login');
@@ -17,9 +20,11 @@ return (
           setUsername={setUsername} 
           username={username} 
         />
-      ) : (
-        <MainPage username={username} />
-      )}
+      ) : page === 'main' ? (<MainPage username={username}   setPage={setPage}/>) 
+      : page === 'admin' ? (<AdminPage username={username}   setPage={setPage}/>)
+      : page === 'history' ? (<HistoryPage username={username}   setPage={setPage}/>)
+      : <NewUserPage setPage={setPage}/>
+    }
     </div>
   );
 }
