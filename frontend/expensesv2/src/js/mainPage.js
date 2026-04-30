@@ -1,20 +1,26 @@
-import { Table } from "./Table";
+import { TotalTable, TransactionTable, TypesTable } from "./Table";
+import { LogoutButton, AdminButton, HistoryButton, Title } from "./Button";
+import {totals, types, transactions} from "./data"
+
 export function MainPage({username, setPage}) {
 
-  const headers =[{"name": "teste"}];
-  const data = [{"name": "teste1"}, {"name": "teste2"}, {"name": "teste3"}];
 
-  function goToAdminPage(){
-    setPage('admin')
-  }
+  return (<><Title username= {username}></Title>
+    <div>
+  <AdminButton setPage={setPage}></AdminButton>
+  <HistoryButton setPage={setPage}></HistoryButton>
+  <LogoutButton setPage={setPage}></LogoutButton>
+  </div>
+  <div>
+    <h2>Totais atuais</h2>
+    <TotalTable info={totals}></TotalTable>
+  
+    <h2>Transações</h2>
+    <TransactionTable info={transactions}></TransactionTable>
 
-  function goToHistoryPage(){
-    setPage('history')
-  }
+    <h2>Tipos</h2>
+    <TypesTable info={types}></TypesTable>
+  </div>
 
-  return (<><h1>Welcome,{username} </h1>
-  <Table headers={headers} info={data}></Table>
-  <button onClick={goToAdminPage}>admin</button>
-  <button onClick={goToHistoryPage}>history</button>
   </>);
 }

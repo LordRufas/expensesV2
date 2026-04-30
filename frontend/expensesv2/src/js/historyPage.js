@@ -1,15 +1,14 @@
+
+import { LogoutButton, AdminButton, MainPageButton,Title } from "./Button";
+import { TransactionTable } from "./Table";
+import { transactions} from "./data"
+
 export function HistoryPage({username, setPage}) {
 
+  return (<><Title username= {username}></Title>
+   <MainPageButton setPage={setPage}></MainPageButton>
+  <AdminButton setPage={setPage}></AdminButton>
+  <LogoutButton setPage={setPage}></LogoutButton>
 
-     function goToMainPage(){
-    setPage('main')
-  }
-
-  function goToAdminPage(){
-    setPage('admin')
-  }
-
-  return (<><h1>Welcome to History,{username} </h1>
-  <button onClick={goToMainPage}>main</button>
-  <button onClick={goToAdminPage}>admin</button></>);
+  <TransactionTable info={transactions}></TransactionTable></>);
 }
