@@ -9,6 +9,8 @@ public class GeneralResponses {
 
     public static final String USER_NOT_FOUND = "User doesn't exist";
 
+    public static final String USER_ALREADY_EXISTS = "User already exists";
+
     public static final String PASSWORD_INCORRECT = "Password incorrect";
 
     public static final String TYPE_NOT_FOUND ="Type doesn't exist";

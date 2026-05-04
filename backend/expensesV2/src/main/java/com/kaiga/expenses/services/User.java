@@ -40,6 +40,13 @@ public class User {
         values.add(id + 1);
         values.add(username);
         values.add(password);
+        ExcelSheet users = core.read(USERS.getId());
+
+        for(ExcelRow row: users.getExcelRows()){
+            if(row.getData().get(1).equals(username))
+                return new BaseResponse(USER_ALREADY_EXISTS , 200);
+        }
+
 
         String response =  core.add(USERS.getId(), values);
         if(response.equals(SUCCESS))

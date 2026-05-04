@@ -1,4 +1,0 @@
- export const totals = [{"date": "01/04/2026", "name": "batata1", "userId": "0", "value": "1.3"}, {"date": "01/04/2026", "name": "batata12", "userId": "0", "value": "1.3"}, {"date": "01/04/2026", "name": "batata1", "userId": "0", "value": "1.1"}];
-  export const transactions = [{"date": "01/01/1999", "typeName": "a", "userId": "0", "value": "1.0", "isRevenue": "true"}, {"date": "01/01/1999", "typeName": "batata0", "userId": "0", "value": "1.0", "isRevenue": "false"}, {"date": "01/01/2001", "typeName": "batata0", "userId": "0", "value": "1.0", "isRevenue": "false"}]
- export const types = [{"name":"batata1","userId":"2"},{"name":"batata2","userId":"2"}]
- 

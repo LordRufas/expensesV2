@@ -8,6 +8,8 @@ import { NewUserPage } from './js/newUser';
 export default function App() {
   const [page, setPage] = useState('login');
   const [username, setUsername] = useState('');
+  
+   const [userId, setUserId] = useState(-1);
 
 
 
@@ -19,10 +21,11 @@ return (
           setPage={setPage}
           setUsername={setUsername} 
           username={username} 
+          setUserId={setUserId}
         />
-      ) : page === 'main' ? (<MainPage username={username}   setPage={setPage}/>) 
-      : page === 'admin' ? (<AdminPage username={username}   setPage={setPage}/>)
-      : page === 'history' ? (<HistoryPage username={username}   setPage={setPage}/>)
+      ) : page === 'main' ? (<MainPage username={username} userId={userId}  setPage={setPage}/>) 
+      : page === 'admin' ? (<AdminPage username={username} userId={userId}  setPage={setPage}/>)
+      : page === 'history' ? (<HistoryPage username={username} userId={userId}  setPage={setPage}/>)
       : <NewUserPage setPage={setPage}/>
     }
     </div>

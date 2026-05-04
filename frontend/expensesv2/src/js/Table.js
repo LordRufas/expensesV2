@@ -1,3 +1,5 @@
+import styles from  "../css/App.css";
+
 export function TotalTable({info})
 {
   return (
@@ -8,17 +10,18 @@ export function TotalTable({info})
 
           Valor
         </tr>
-      </thead>
-
+      </thead>{
+info &&
       <tbody>
             {
             info.map((data) =>(<>
-            <tr key={data.userId}>
+            <tr>
             {data.name} { }
             {data.value}</tr>
         </>)) 
         }
         </tbody>
+}
     </table>
   );
 }
@@ -33,21 +36,47 @@ export function TypesTable({info})
           Nome
         </tr>
       </thead>
-
+{
+info &&
       <tbody>
             {
             info.map((data) =>(<>
-            <tr key={data.userId}>
+            <tr>
             {data.name} </tr>
         </>)) 
         }
         </tbody>
+}
     </table>
   );
 }
 
-export function TransactionTable({info})
+export function TransactionTable({info1})
 {
+
+ const  info = [
+      {
+        "date": "01/01/1999",
+        "typeName": "a",
+        "userId": "0",
+        "value": "1.0",
+        "isRevenue": "false"
+      },
+      {
+        "date": "01/01/1999",
+        "typeName": "batata0",
+        "userId": "0",
+        "value": "1.0",
+        "isRevenue": "false"
+      },
+      {
+        "date": "01/01/2001",
+        "typeName": "batata0",
+        "userId": "0",
+        "value": "1.0",
+        "isRevenue": "false"
+      }
+    ];
   return (
     <table border="1">
       <thead>
@@ -61,18 +90,21 @@ export function TransactionTable({info})
           +/-
         </tr>
       </thead>
-
+{
+info &&
       <tbody>
             {
             info.map((data) =>(<>
-            <tr key={data.userId}>
+            <tr>
             {data.date} { }
             {data.typeName} { }
             {data.value} { }
-            {data.isRevenue === "true" ? '+' : '-'}</tr>
+            {data.isRevenue === "true" ? '+' : '-'}
+            <button>delete</button></tr>
         </>)) 
         }
         </tbody>
+}
     </table>
   );
 }

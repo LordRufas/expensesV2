@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class Controller {
 
@@ -59,8 +60,8 @@ public class Controller {
 
 
     @GetMapping("/getTypesByUser")
-    public BaseResponse getTypesByUser(@RequestBody GetUserTypes getUserTypes) {
-        return type.getTypes(getUserTypes.getId());
+    public BaseResponse getTypesByUser(@RequestParam int id) {
+        return type.getTypes(id);
     }
 
     @PatchMapping("/updateTypesByUser")
@@ -87,8 +88,8 @@ public class Controller {
 
 
     @GetMapping("/getTotalsByUser")
-    public BaseResponse getTotalsByUser(@RequestBody GetUserTotals getUserTotals) {
-        return total.getTotal(getUserTotals.getId());
+    public BaseResponse getTotalsByUser(@RequestParam int id) {
+        return total.getTotal(id);
     }
 
     @PatchMapping("/updateTotalsByUser")

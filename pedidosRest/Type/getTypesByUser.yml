@@ -5,10 +5,14 @@ info:
 
 http:
   method: GET
-  url: http://localhost:8080/getTypesByUser
+  url: http://localhost:8080/getTypesByUser?id=2
+  params:
+    - name: id
+      value: "2"
+      type: query
   body:
     type: json
-    data: '{"id":2}'
+    data: ""
   auth: inherit
 
 settings:

@@ -1,8 +1,24 @@
 import { MainPageButton, HistoryButton, LogoutButton, Title } from "./Button";
 import { TotalTable, TypesTable } from "./Table";
-import {totals, types} from "./data"
 
-export function AdminPage({username, setPage}) {
+import { use, useState , useEffect} from "react";
+import { fetchTypes ,fetchTotals, fetchData } from "./Api";
+
+export function AdminPage({username, setPage,userId}) {
+
+    const [totals, setTotals] = useState('');
+  const [types, setTypes] = useState('');
+
+  useEffect(() => {
+  fetchData({
+    userId,
+    setTotals,
+    setTypes
+  });
+}, [userId,
+    setTotals,
+    setTypes]);
+
 
   return (<><Title username= {username}></Title>
  <MainPageButton setPage={setPage}></MainPageButton>
