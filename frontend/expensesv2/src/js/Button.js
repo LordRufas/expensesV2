@@ -77,3 +77,12 @@ export function DeleteTransactionButton({ userId, date, typeName, value, isReven
     }
     return <button onClick={handleLogin}>Login</button>;
 }
+
+export function SaveButton({ totals, date, transactions,}) {
+    
+    const handleLogin = async () => {
+
+     
+    }
+    return <button onClick={handleLogin}>Gravar</button>;
+}

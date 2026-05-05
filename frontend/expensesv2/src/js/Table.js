@@ -86,8 +86,6 @@ export function TransactionTable({info1})
           tipo
 
           valor
-
-          +/-
         </tr>
       </thead>
 {
@@ -99,7 +97,6 @@ info &&
             {data.date} { }
             {data.typeName} { }
             {data.value} { }
-            {data.isRevenue === "true" ? '+' : '-'}
             <button>delete</button></tr>
         </>)) 
         }
