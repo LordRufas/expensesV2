@@ -17,7 +17,10 @@ info &&
             info.map((data) =>(<>
             <tr>
             {data.name} { }
-            {data.value}</tr>
+            {data.value}
+             <button>editar</button>
+              <button>apagar</button>
+              </tr>
         </>)) 
         }
         </tbody>
@@ -42,7 +45,9 @@ info &&
             {
             info.map((data) =>(<>
             <tr>
-            {data.name} </tr>
+            {data.name} 
+             <button>editar</button>
+              <button>apagar</button></tr>
         </>)) 
         }
         </tbody>
@@ -97,7 +102,8 @@ info &&
             {data.date} { }
             {data.typeName} { }
             {data.value} { }
-            <button>delete</button></tr>
+             <button>editar</button>
+            <button>apagar</button></tr>
         </>)) 
         }
         </tbody>

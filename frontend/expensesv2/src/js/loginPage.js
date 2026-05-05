@@ -18,18 +18,18 @@ function ErrorMessage({errorMessage, SetErrorMessage}){
 
   return (<>
   <div>
-      {errorMessage === "username" ? <label>Username doesn't exist</label>
+      {errorMessage === "404" ? <label>User não existe</label>
       :
-      errorMessage === "password" ? <label>Incorrect password</label>
-    :  errorMessage === "generic" ? <label>Generic error</label>
+      errorMessage === "401" ? <label>Password incorreta</label>
+    :  errorMessage === "500" ? <label>Erro generico</label>
+    : errorMessage === "200" ? <label>User criado com sucesso</label>
   : null}
      </div>
       </>)
 }
 
-export function LoginPage({ setPage, setUsername, username, setUserId}){
+export function LoginPage({ setPage, setUsername, username, setUserId, errorMessage, SetErrorMessage}){
    const [password, setPassword] = useState('');
-   const [errorMessage, SetErrorMessage] = useState('');
  return(<>
     <LoginInfo setUsername={setUsername}
     setPassword={setPassword}></LoginInfo>
@@ -39,7 +39,7 @@ export function LoginPage({ setPage, setUsername, username, setUserId}){
     password={password}
     SetErrorMessage={SetErrorMessage}
     setUserId={setUserId}>Login</LoginButton>
-    <NewUserButton setPage={setPage}>Novo utilizador</NewUserButton>
+    <NewUserButton setPage={setPage} errorMessage={errorMessage} SetErrorMessage={SetErrorMessage}>Novo utilizador</NewUserButton>
     <ErrorMessage errorMessage={errorMessage} SetErrorMessage = {SetErrorMessage}></ErrorMessage>
  </>)
 }

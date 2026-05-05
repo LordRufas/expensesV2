@@ -46,17 +46,7 @@ export async function Login(username, password) {
     }
 }
 
-export async function fetchData({userId, setTotals, setTypes}){
-  let response = await fetchTypes(userId);
 
-  if(response.statusCode === 200 && response.statusMessage === "OK")
-    setTypes(response.response.types)
-  response = await fetchTotals(userId);
-  if(response.statusCode === 200 && response.statusMessage === "OK")
-    setTotals(response.response.totals)
-
-  return;
-}
 
 export async function fetchTypes(userId){
  try {

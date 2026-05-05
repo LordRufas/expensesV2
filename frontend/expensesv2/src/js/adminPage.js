@@ -9,15 +9,7 @@ export function AdminPage({username, setPage,userId}) {
     const [totals, setTotals] = useState('');
   const [types, setTypes] = useState('');
 
-  useEffect(() => {
-  fetchData({
-    userId,
-    setTotals,
-    setTypes
-  });
-}, [userId,
-    setTotals,
-    setTypes]);
+ 
 
 
   return (<><Title username= {username}></Title>

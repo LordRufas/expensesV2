@@ -1,39 +1,50 @@
 import { TotalTable, TransactionTable, TypesTable } from "./Table";
-import { LogoutButton, AdminButton, HistoryButton, Title, SaveButton } from "./Button";
+import { LogoutButton, HistoryButton, Title, SaveButton } from "./Button";
 import "../css/App.css"
 import { use, useState , useEffect} from "react";
-import { fetchTypes ,fetchTotals, fetchData } from "./Api";
+import { fetchTypes ,fetchTotals } from "./Api";
 
-export function MainPage({username, setPage, userId}) {
+export function MainPage({ username, setPage, userId }) {
+  const [totals, setTotals] = useState([]);
+  const [types, setTypes] = useState([]);
 
-  const [totals, setTotals] = useState('');
-  const [types, setTypes] = useState('');
   useEffect(() => {
-  fetchData({
-    userId,
-    setTotals,
-    setTypes
-  });
-}, [userId,
-    setTotals,
-    setTypes]);
+    async function loadData() {
+      const typesResponse = await fetchTypes(userId);
+      const totalsResponse = await fetchTotals(userId);
 
+      if (typesResponse.statusCode === 200 && typesResponse.statusMessage === "OK") {
+        setTypes(typesResponse.response.types);
+      }
 
-  return (<><Title username= {username}></Title>
-    <div >
-  <AdminButton setPage={setPage}></AdminButton>
-  <HistoryButton setPage={setPage}></HistoryButton>
-  <LogoutButton setPage={setPage}></LogoutButton>
-  </div> 
-  <div>
-    <TotalDiv info={totals}></TotalDiv>
-    <TransactionDiv></TransactionDiv>
-    <TypeDiv info={types}></TypeDiv>
-    </div>
-    <div>
-    <SaveButton></SaveButton>
-    </div>
-  </>);
+      if (totalsResponse.statusCode === 200 && totalsResponse.statusMessage === "OK") {
+        setTotals(totalsResponse.response.totals);
+      }
+    }
+
+    loadData();
+  }, [userId]);
+
+  return (
+    <>
+      <Title username={username} />
+
+      <div>
+        <HistoryButton setPage={setPage} />
+        <LogoutButton setPage={setPage} />
+      </div>
+
+      <div>
+        <TotalDiv totals={totals} />
+        <TransactionDiv />
+        <TypeDiv types={types} />
+      </div>
+
+      <div>
+        <SaveButton />
+      </div>
+    </>
+  );
 }
 
 function TransactionDiv(){
