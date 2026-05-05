@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import {LoginButton, NewUserButton} from "./Button"
+import {LoginButton, NewUserButton, ErrorMessage} from "./Button"
 
 function LoginInfo({page, setPage, setUsername, setPassword}){
     return (<> 
@@ -12,21 +12,6 @@ function LoginInfo({page, setPage, setUsername, setPassword}){
         </div></>)
 }
 
-
-
-function ErrorMessage({errorMessage, SetErrorMessage}){
-
-  return (<>
-  <div>
-      {errorMessage === "404" ? <label>User não existe</label>
-      :
-      errorMessage === "401" ? <label>Password incorreta</label>
-    :  errorMessage === "500" ? <label>Erro generico</label>
-    : errorMessage === "200" ? <label>User criado com sucesso</label>
-  : null}
-     </div>
-      </>)
-}
 
 export function LoginPage({ setPage, setUsername, username, setUserId, errorMessage, SetErrorMessage}){
    const [password, setPassword] = useState('');

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { LoginPage } from './js/loginPage';
 import { MainPage } from './js/mainPage';
-import { AdminPage } from './js/adminPage';
 import { HistoryPage } from './js/historyPage';
 import { NewUserPage } from './js/newUser';
 
@@ -27,9 +26,10 @@ return (
         />
       ) : page === 'main' ? (<MainPage username={username} userId={userId}  setPage={setPage}/>) 
         : page === 'history' ? (<HistoryPage username={username} userId={userId}  setPage={setPage}/>)
-        : <NewUserPage setPage={setPage}
+        : page === 'newUser' ? <NewUserPage setPage={setPage} 
           errorMessage={errorMessage}
           SetErrorMessage={SetErrorMessage}/>
+          : <div>Page not found</div> 
     }
     </div>
   );

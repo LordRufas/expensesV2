@@ -6,42 +6,4 @@
      background-image: url('../img/main_page_background.jpg');
      background-size: cover;
 }
-
-
-
-
-
-.headerButton {
-     margin-left: 10px;
-     background: var(--primary-button-color);
-     border-radius: 999px;
-     box-shadow: var(--primary-button-color) 0 10px 20px -10px;
-     box-sizing: border-box;
-     color: #FFFFFF;
-     cursor: pointer;
-     font-family: Inter,Helvetica,"Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Noto Color Emoji","Segoe UI Symbol","Android Emoji",EmojiSymbols,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans",sans-serif;
-     font-size: 10px;
-     font-weight: 70;
-     line-height: 24px;
-     opacity: 1;
-     outline: 0 solid transparent;
-     padding: 8px 18px;
-     user-select: none;
-     -webkit-user-select: none;
-     touch-action: manipulation;
-     width: fit-content;
-     word-break: break-word;
-     border: 0;
-}
-
-h2{
-     color: var(--primary-button-color) 
-}
-
- #welcomeUsername {
-     font-family: 'Dancing Script', cursive;
-     font-size: 14px;
-     margin-bottom: 30px;
-     color: var(--primary-button-color);
-}
 */

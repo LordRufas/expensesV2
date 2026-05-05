@@ -56,32 +56,8 @@ info &&
   );
 }
 
-export function TransactionTable({info1})
+export function TransactionTable({info})
 {
-
- const  info = [
-      {
-        "date": "01/01/1999",
-        "typeName": "a",
-        "userId": "0",
-        "value": "1.0",
-        "isRevenue": "false"
-      },
-      {
-        "date": "01/01/1999",
-        "typeName": "batata0",
-        "userId": "0",
-        "value": "1.0",
-        "isRevenue": "false"
-      },
-      {
-        "date": "01/01/2001",
-        "typeName": "batata0",
-        "userId": "0",
-        "value": "1.0",
-        "isRevenue": "false"
-      }
-    ];
   return (
     <table border="1">
       <thead>
