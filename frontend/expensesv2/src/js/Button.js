@@ -1,4 +1,4 @@
-import { Login, addTransaction, createUser } from "./Api";
+import * as API from "./Api";
 import { useState } from "react";
 
 export function LogoutButton({setPage}){
@@ -56,7 +56,7 @@ export function LoginButton({ setUsername, setPage, username, password, setPassw
     
     const handleLogin = async () => {
 
-     const response = await Login(username, password);
+     const response = await API.Login(username, password);
    
     if(response.statusCode === 200 && response.statusMessage === "OK"){
       setUserId(response.response.userId)
@@ -81,7 +81,7 @@ export function CreateUserButton({  setPage , password, username,SetErrorMessage
          SetErrorMessage('Os campos estão vazios')
          return;
       }
-      const response = await createUser(username, password);
+      const response = await API.createUser(username, password);
       if(response.statusCode === 200 && response.statusMessage === "OK"){
       setPage('login')
       }else if (response.statusCode === 200 && response.statusMessage === "User already exists"){
@@ -209,4 +209,35 @@ export function ErrorMessage({errorMessage}){
        <label>{errorMessage}</label>
      </div>
       </>)
+}
+
+export function GetTransactionByUserButton({date, userId, setTransaction, setErrorMessage}){
+
+  const fetchUserTransactions = async () => {
+    if(date === "")
+      setErrorMessage("A data tem que estar preenchida")
+    else{
+      const response = await API.fetchTransactions(userId);
+      if(response.statusCode === 200 && response.statusMessage === "OK" && response.response.transactions.length >0){
+      setErrorMessage("");
+      const transactions = filterTransactions(date,  response.response.transactions);
+      if(transactions.length > 0)
+      setTransaction(transactions)
+    else 
+        setErrorMessage("Não existe transações para esse mes");
+      }else {
+      setErrorMessage(`Erro generico: ${response.statusMessage}`); 
+      }
+    }
+      
+
+  }
+
+  return (<><button onClick={fetchUserTransactions}>Pesquisar</button></>)
+
+}
+
+function filterTransactions(date, transactions){
+  const formattedDate = date.split('-').reverse().join('/');
+    return transactions.filter(t => t.date.includes(formattedDate));
 }

@@ -56,7 +56,7 @@ info &&
   );
 }
 
-export function TransactionTable({info})
+export function TransactionTable({info, editMode})
 {
   return (
     <table border="1">
@@ -78,8 +78,9 @@ info &&
             {data.date} { }
             {data.typeName} { }
             {data.value} { }
-             <button>editar</button>
-            <button>apagar</button></tr>
+            { editMode &&
+             <button>editar</button>}
+           { editMode &&  <button>apagar</button>}</tr>
         </>)) 
         }
         </tbody>

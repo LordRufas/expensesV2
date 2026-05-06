@@ -60,7 +60,7 @@ function TransactionDiv({userId, totals, types, transactions, setTransactions}){
   const [isRevenue, setIsRevenue] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   return(<>    <h2>Transações</h2>
-    <Tables.TransactionTable info={transactions}></Tables.TransactionTable>
+    <Tables.TransactionTable info={transactions} editMode= {true}></Tables.TransactionTable>
     
   <input type="month"  onChange={(e) => setDate(e.target.value)} />
     <input placeholder="valor" type="number"  onChange={(e) => setValue(e.target.value)} ></input>
