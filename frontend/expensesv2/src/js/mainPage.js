@@ -40,7 +40,7 @@ export function MainPage({ username, setPage, userId}) {
 
       <div>
         <TotalDiv userId={userId} totals={totals} setTotals={setTotals}/>
-        <TransactionDiv userId={userId} totals = {totals} types={types} transactions={transactions} setTransactions={setTransactions}/>
+        <TransactionDiv userId={userId} totals = {totals} setTotals={setTotals} types={types} transactions={transactions} setTransactions={setTransactions}/>
         <TypeDiv userId={userId} types={types} setTypes={setTypes}/>
       </div>
 
@@ -51,7 +51,7 @@ export function MainPage({ username, setPage, userId}) {
   );
 }
 
-function TransactionDiv({userId, totals, types, transactions, setTransactions}){
+function TransactionDiv({userId, totals, setTotals, types, transactions, setTransactions}){
   
   const [date, setDate] = useState(''); 
   const [total, setTotal] = useState('');
@@ -60,16 +60,17 @@ function TransactionDiv({userId, totals, types, transactions, setTransactions}){
   const [isRevenue, setIsRevenue] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   return(<>    <h2>Transações</h2>
-    <Tables.TransactionTable info={transactions} editMode= {true}></Tables.TransactionTable>
+    <Tables.TransactionTable info={transactions} editMode= {true} userId={userId} setInfo={setTransactions}></Tables.TransactionTable>
     
   <input type="month"  onChange={(e) => setDate(e.target.value)} />
     <input placeholder="valor" type="number"  onChange={(e) => setValue(e.target.value)} ></input>
    <Buttons.Combobox info={types} value={type} setValue={setType} placeholder={"Tipo de transferencia"}></Buttons.Combobox>
   <Buttons.Combobox info={totals} value={total} setValue={setTotal} placeholder={"Total"}></Buttons.Combobox>
-  <input type="checkbox" placeholder="+/-"></input>
+  <input type="checkbox" onChange={(e) => setIsRevenue(e.target.checked)}></input>
   <Buttons.AddTransactionButton userId={userId} setTransactions={setTransactions} date={date} 
     total={total} value={value} type={type} isRevenue={isRevenue} setErrorMessage={setErrorMessage}
-    transactions={transactions}setTransaction={setTransactions}>Adicionar</Buttons.AddTransactionButton>
+    transactions={transactions}setTransaction={setTransactions}
+    totals={totals} setTotals={setTotals}>Adicionar</Buttons.AddTransactionButton>
    <Buttons.ErrorMessage errorMessage={errorMessage}></Buttons.ErrorMessage> 
     </>)
 }
@@ -81,7 +82,7 @@ function TotalDiv({userId, totals, setTotals}){
   const [errorMessage, setErrorMessage] = useState('');
   return(<>
     <h2>Totais atuais</h2>
-    <Tables.TotalTable info={totals}></Tables.TotalTable>
+    <Tables.TotalTable info={totals} setInfo={setTotals} userId={userId}></Tables.TotalTable>
       <input placeholder="nome" onChange={(e) => setName(e.target.value)}></input>
    <input placeholder="valor" type="number" onChange={(e) => setValue(e.target.value)}></input>
   <Buttons.AddTotalButton userId={userId}  date={currentDate} 
@@ -97,7 +98,7 @@ function TypeDiv({userId, types, setTypes}){
 
   return(<>
     <h2>Tipos</h2>
-    <Tables.TypesTable info={types} onChange={(e) => setName(e.target.value)}></Tables.TypesTable>
+    <Tables.TypesTable info={types} setInfo={setTypes} userId={userId}></Tables.TypesTable>
     <input placeholder="nome" onChange={(e) => setName(e.target.value)}></input>
   <Buttons.AddTypeButton userId={userId} name ={name}
   setErrorMessage={setErrorMessage} types={types} setTypes={setTypes}>Adicionar</Buttons.AddTypeButton>

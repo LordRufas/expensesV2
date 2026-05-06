@@ -126,11 +126,10 @@ export function Combobox({ info,value, setValue, placeholder }) {
   );
 }
 
-export function AddTransactionButton({ userId, date, value, type, total, isRevenue, setErrorMessage, transactions, setTransaction}){
+export function AddTransactionButton({ userId, date, value, type, total, isRevenue, setErrorMessage, transactions, setTransaction, totals, setTotals}){
   function addNewTransaction(){
   if(date === undefined || value === undefined || type === undefined || total === undefined ||
-    date === "" || value === "" || type === "" || total === ""
-  )
+    date === "" || value === "" || type === "" || total === "")
     setErrorMessage("Os campos não estão preenchidos")
   else {
      setErrorMessage("")
@@ -139,14 +138,52 @@ export function AddTransactionButton({ userId, date, value, type, total, isReven
   typeName: type,
   userId: userId,
   value: value,
-  isRevenue:isRevenue 
+  isRevenue:isRevenue ,
+  total:total
 };
 
+    updateTotal(value, total,  totals, setTotals, isRevenue);
      setTransaction(prev => [...transactions, newTransaction]);
   }
 }
   return(<><button onClick={addNewTransaction}>Adicionar</button></>)
 }
+
+
+
+export function updateTotal(addValue, oldValue, totals, setTotals,isRevenue){
+
+  const oldTotal =  totals.filter(item => {
+   if (item.name === oldValue) {
+    return item;
+    }});
+
+ const filteredInfo = totals.filter(item => {
+   if (item.name !== oldValue) {
+    return item;
+    }});
+  let newTotal = [];
+let newValue = isRevenue
+  ? Number(oldTotal[0].value) + Number(addValue)
+  : Number(oldTotal[0].value) - Number(addValue);
+
+
+
+   newTotal = {
+  date: oldTotal[0].date,
+  name: oldTotal[0].name ,
+   userId: oldTotal[0].userId,
+   value: newValue.toFixed(2)
+  
+};
+
+const newTotals = [...filteredInfo, newTotal];
+
+     setTotals(newTotals.sort((a, b) => {
+  return a.name.localeCompare(b.name);
+}))
+}
+
 
 export function AddTotalButton({ userId, date, value,  name, setErrorMessage, totals, setTotals}){
   function addNewTotal(){
