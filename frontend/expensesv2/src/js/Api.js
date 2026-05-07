@@ -100,12 +100,13 @@ export async function updateTypes(userId, oldName, newName) {
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: userId,
-        oldName: oldName,
-        newName: newName
+        "id": userId,
+        "oldName": oldName,
+        "newName": newName
       }),
     });
 
@@ -121,18 +122,19 @@ export async function updateTypes(userId, oldName, newName) {
 }
 
 
-export async function deleteTypes(userId, name) {
+export async function deleteType(userId, name) {
   try {
     const url = `${baseUrl}/deleteTypesByUser`;
 
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: userId,
-        name: name
+        "id": userId,
+        "name": name
       }),
     });
 
@@ -199,16 +201,17 @@ export async function updateTotals(userId, oldName, newName, oldDate, newDate, o
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: userId,
-        oldName: oldName,
-        newName: newName,
-        oldDate: oldDate,
-        newDate: newDate,
-        oldValue: oldValue,
-        newValue: newValue
+        "id": userId,
+        "oldName": oldName,
+        "newName": newName,
+        "oldDate": oldDate,
+        "newDate": newDate,
+        "oldValue": oldValue,
+        "newValue": newValue
       }),
     });
 
@@ -231,13 +234,14 @@ export async function deleteTotal(userId, name, date, value) {
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: userId,
-        name: name,
-        date: date,
-        value: value
+        "id": Number(userId),
+        "name": name,
+        "date": date,
+        "value": Number(value)
       }),
     });
 
@@ -277,7 +281,7 @@ export async function fetchTransactions(userId) {
 
 export async function addTransaction(userId, typeName, date, value, isRevenue) {
   try {
-    const url = `${baseUrl}/addTransaction?id=${userId}&date=${date}&typeName=${typeName}&value=${value}&isRevenue=${isRevenue}`;
+    const url = `${baseUrl}/addTransaction?userId=${userId}&date=${date}&typeName=${typeName}&value=${value}&isRevenue=${isRevenue}`;
 
     const response = await fetch(url, {
       method: 'POST',
@@ -304,18 +308,19 @@ export async function updateTransaction(userId, oldDate, oldType, oldValue, oldI
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: userId,
-        oldDate: oldDate,
-        oldType: oldType,
-        oldValue: oldValue,
-        oldIsRevenue: oldIsRevenue,
-        newDate: newDate,
-        newType: newType,
-        newValue: newValue,
-        newIsRevenue: newIsRevenue
+        "id": userId,
+        "oldDate": oldDate,
+        "oldType": oldType,
+        "oldValue": oldValue,
+        "oldIsRevenue": oldIsRevenue,
+        "newDate": newDate,
+        "newType": newType,
+        "newValue": newValue,
+        "newIsRevenue": newIsRevenue
       }),
     });
 
@@ -331,21 +336,22 @@ export async function updateTransaction(userId, oldDate, oldType, oldValue, oldI
 }
 
 
-export async function deleteTransactionByUser(userId, date, typeName, value, isRevenue) {
+export async function deleteTransaction(userId, date, typeName, value, isRevenue) {
   try {
     const url = `${baseUrl}/deleteTransactionByUser`;
 
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: userId,
-        date: date,
-        typeName: typeName,
-        value: value,
-        isRevenue: isRevenue
+        "id": userId,
+        "date": date,
+        "typeName": typeName,
+        "value": value,
+        "isRevenue": isRevenue
       }),
     });
 

@@ -60,7 +60,7 @@ function TransactionDiv({ userId, totals, setTotals, types, transactions, setTra
   const [isRevenue, setIsRevenue] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   return (<>    <h2>Transações</h2>
-    <Tables.TransactionTable info={transactions} editMode={true} userId={userId} setInfo={setTransactions}></Tables.TransactionTable>
+    <Tables.TransactionTable info={transactions} editMode={true} userId={userId} setInfo={setTransactions} setErrorMessage={setErrorMessage}></Tables.TransactionTable>
 
     <input type="month" onChange={(e) => setDate(e.target.value)} />
     <input placeholder="valor" type="number" onChange={(e) => setValue(e.target.value)} ></input>
@@ -82,7 +82,7 @@ function TotalDiv({ userId, totals, setTotals }) {
   const [errorMessage, setErrorMessage] = useState('');
   return (<>
     <h2>Totais atuais</h2>
-    <Tables.TotalTable info={totals} setInfo={setTotals} userId={userId}></Tables.TotalTable>
+    <Tables.TotalTable info={totals} setInfo={setTotals} userId={userId} setErrorMessage={setErrorMessage}></Tables.TotalTable>
     <input placeholder="nome" onChange={(e) => setName(e.target.value)}></input>
     <input placeholder="valor" type="number" onChange={(e) => setValue(e.target.value)}></input>
     <Buttons.AddTotalButton userId={userId} date={currentDate}
@@ -98,7 +98,7 @@ function TypeDiv({ userId, types, setTypes }) {
 
   return (<>
     <h2>Tipos</h2>
-    <Tables.TypesTable info={types} setInfo={setTypes} userId={userId}></Tables.TypesTable>
+    <Tables.TypesTable info={types} setInfo={setTypes} userId={userId} setErrorMessage={setErrorMessage}></Tables.TypesTable>
     <input placeholder="nome" onChange={(e) => setName(e.target.value)}></input>
     <Buttons.AddTypeButton userId={userId} name={name}
       setErrorMessage={setErrorMessage} types={types} setTypes={setTypes}>Adicionar</Buttons.AddTypeButton>

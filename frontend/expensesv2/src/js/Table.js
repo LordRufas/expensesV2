@@ -1,6 +1,10 @@
+import { useSearchParams } from "react-router-dom";
 import styles from "../css/App.css";
 
-export function TotalTable({ info, setInfo, userId }) {
+import * as Buttons from "./Button";
+import { useState } from "react";
+
+export function TotalTable({ info, setInfo, userId, setErrorMessage }) {
   return (
     <table border="1">
       <thead>
@@ -17,7 +21,7 @@ export function TotalTable({ info, setInfo, userId }) {
               <tr>
                 <input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeTotal(e.target.value, data, "name", info, setInfo, userId)} />
                 <input type="number" value={data.value} placeholder={data.value} onChange={(e) => changeTotal(e.target.value, data, "value", info, setInfo, userId)} />
-                <button onClick={() => deleteValue(data, info, setInfo)}>apagar</button>
+                <Buttons.DeleteTotalButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTotalButton>
               </tr>
 
 
@@ -29,7 +33,7 @@ export function TotalTable({ info, setInfo, userId }) {
   );
 }
 
-export function TransactionTable({ info, userId, editMode, setInfo }) {
+export function TransactionTable({ info, userId, editMode, setInfo, setErrorMessage }) {
   return (
     <table border="1">
       <thead>
@@ -50,7 +54,7 @@ export function TransactionTable({ info, userId, editMode, setInfo }) {
                 {data.date} { }
                 {data.typeName} { }
                 {data.value} { }
-                {editMode && <button onClick={() => deleteValue(data, info, setInfo)}>apagar</button>}</tr>
+                {editMode && <Buttons.DeleteTransactionButton userId={userId} data= {data}  info ={info} setInfo ={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton >}</tr>
             </>))
           }
         </tbody>
@@ -59,7 +63,7 @@ export function TransactionTable({ info, userId, editMode, setInfo }) {
   );
 }
 
-export function TypesTable({ info, setInfo, userId }) {
+export function TypesTable({ info, setInfo, userId, setErrorMessage }) {
   return (
     <table border="1">
       <thead>
@@ -74,7 +78,7 @@ export function TypesTable({ info, setInfo, userId }) {
             info.map((data) => (<>
               <tr>
                 <input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeType(e.target.value, data.name, info, setInfo, userId)} />
-                <button onClick={() => deleteValue(data, info, setInfo)}>apagar</button></tr>
+                <Buttons.DeleteTypeButton userId={userId} data= {data}  info ={info} setInfo ={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTypeButton ></tr>
             </>))
           }
         </tbody>
@@ -138,14 +142,5 @@ export function changeTotal(newValue, oldValue, property, totals, setTotals, use
   setTotals(newTotals.sort((a, b) => {
     return a.name.localeCompare(b.name);
   }))
-
-}
-
-
-
-
-export function deleteValue(oldValue, info, setInfo) {
-  const updated = info.filter(item => item !== oldValue);
-  setInfo(updated);
 
 }

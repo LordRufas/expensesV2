@@ -94,7 +94,7 @@ export function CreateUserButton({ setPage, password, username, SetErrorMessage 
   return <button onClick={handleCreateUser}>Criar</button>;
 }
 
-
+//TODO
 export function SaveButton({ totals, date, transactions }) {
 
   const handleLogin = async () => {
@@ -126,31 +126,41 @@ export function Combobox({ info, value, setValue, placeholder }) {
   );
 }
 
+//TODO
 export function AddTransactionButton({ userId, date, value, type, total, isRevenue, setErrorMessage, transactions, setTransaction, totals, setTotals }) {
-  function addNewTransaction() {
+  const addNewTransaction = async () => {
     if (date === undefined || value === undefined || type === undefined || total === undefined ||
       date === "" || value === "" || type === "" || total === "")
       setErrorMessage("Os campos não estão preenchidos")
     else {
-      setErrorMessage("")
-      const newTransaction = {
-        date: date,
-        typeName: type,
-        userId: userId,
-        value: value,
-        isRevenue: isRevenue,
-        total: total
-      };
+      if (date === "")
+        setErrorMessage("A data tem que estar preenchida")
+      else {
+        const response = await API.addTransaction(userId, type, date, value, isRevenue);
+        if (response.statusCode === 200 && response.statusMessage === "Transaction added with success") {
+          setErrorMessage("")
+          const newTransaction = {
+            date: date,
+            typeName: type,
+            userId: userId,
+            value: value,
+            isRevenue: isRevenue,
+            total: total
+          };
 
-      updateTotal(value, total, totals, setTotals, isRevenue);
-      setTransaction(prev => [...transactions, newTransaction]);
+          updateTotal(value, total, totals, setTotals, isRevenue);
+          setTransaction(prev => [...transactions, newTransaction]);
+        } else {
+          setErrorMessage(`Erro generico: ${response.statusMessage}`);
+        }
+      }
     }
   }
   return (<><button onClick={addNewTransaction}>Adicionar</button></>)
 }
 
 
-
+//TODO
 export function updateTotal(addValue, oldValue, totals, setTotals, isRevenue) {
 
   const oldTotal = totals.filter(item => {
@@ -188,7 +198,7 @@ export function updateTotal(addValue, oldValue, totals, setTotals, isRevenue) {
 
 
 export function AddTotalButton({ userId, date, value, name, setErrorMessage, totals, setTotals }) {
-  
+
   const addNewTotal = async () => {
     if (date === undefined || value === undefined || name === undefined ||
       date === "" || value === "" || name === "")
@@ -203,7 +213,7 @@ export function AddTotalButton({ userId, date, value, name, setErrorMessage, tot
         return;
       }
 
-       
+
 
       const response = await API.addTotals(userId, name, getCurrentDate(), value);
 
@@ -247,7 +257,7 @@ export function AddTypeButton({ userId, name, setErrorMessage, types, setTypes }
 
       if (response.statusCode === 200 && response.statusMessage === "Type added with success") {
 
-        
+
         const newType = {
           userId: userId,
           name: name
@@ -301,8 +311,7 @@ export function GetTransactionByUserButton({ date, userId, setTransaction, setEr
 }
 
 function filterTransactions(date, transactions) {
-  const formattedDate = date.split('-').reverse().join('/');
-  return transactions.filter(t => t.date.includes(formattedDate));
+  return transactions.filter(t => t.date.includes(date));
 }
 
 
@@ -312,8 +321,72 @@ function getCurrentDate() {
   const month = String(today.getMonth() + 1).padStart(2, '0');
   const year = today.getFullYear();
 
-  const formattedDate = `01/${month}/${year}`;
+  const formattedDate = `${year}-${month}`;
 
   console.log(formattedDate);
   return formattedDate;
+}
+
+
+
+
+//TODO
+export function DeleteTotalButton({ userId, data, info, setInfo, setErrorMessage }) {
+
+  const deleteTotal = async () => {
+
+    const response = await API.deleteTotal(userId, data.name, data.date, data.value);
+    if (response.statusCode === 200 && response.statusMessage === "Total deleted with success") {
+      setErrorMessage("");
+      deleteValue(data, info, setInfo)
+    } else {
+      setErrorMessage(`Erro generico: ${response.statusMessage}`);
+    }
+
+  }
+  return (<><button onClick={deleteTotal}>Apagar</button></>)
+
+}
+
+export function DeleteTypeButton({userId, data, info, setInfo, setErrorMessage}) {
+
+  const deleteType = async () => {
+
+    const response = await API.deleteType(userId, data.name);
+    if (response.statusCode === 200 && response.statusMessage === "Type deleted with success") {
+      setErrorMessage("");
+      deleteValue(data, info, setInfo)
+    } else {
+      setErrorMessage(`Erro generico: ${response.statusMessage}`);
+    }
+
+  }
+  return (<><button onClick={deleteType}>Apagar</button></>)
+
+}
+
+
+export function DeleteTransactionButton({userId, data, info, setInfo, setErrorMessage}) {
+
+  const deleteTransaction = async () => {
+
+    const response = await API.deleteTransaction(userId, data.date, data.typeName, data.value, data.isRevenue);
+    if (response.statusCode === 200 && response.statusMessage === "Transaction deleted with success") {
+      setErrorMessage("");
+      deleteValue(data, info, setInfo)
+    } else {
+      setErrorMessage(`Erro generico: ${response.statusMessage}`);
+    }
+
+  }
+  return (<><button onClick={deleteTransaction}>Apagar</button></>)
+
+}
+
+
+
+export function deleteValue(oldValue, info, setInfo) {
+  const updated = info.filter(item => item !== oldValue);
+  setInfo(updated);
+
 }
