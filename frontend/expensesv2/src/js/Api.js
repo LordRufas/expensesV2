@@ -1,14 +1,14 @@
 const baseUrl = "http://localhost:8080"
 
 
-export async function createUser(username, password){
+export async function createUser(username, password) {
   try {
     const url = `${baseUrl}/createUser?username=${username}&password=${password}`;
 
     const response = await fetch(url, {
       method: 'POST',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       }
     });
 
@@ -19,8 +19,8 @@ export async function createUser(username, password){
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
 
@@ -30,8 +30,8 @@ export async function Login(username, password) {
 
     const response = await fetch(url, {
       method: 'GET',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       }
     });
 
@@ -42,20 +42,20 @@ export async function Login(username, password) {
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
 
 
-export async function fetchTypes(userId){
- try {
+export async function fetchTypes(userId) {
+  try {
     const url = `${baseUrl}/getTypesByUser?id=${userId}`;
 
     const response = await fetch(url, {
       method: 'GET',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       }
     });
 
@@ -66,18 +66,18 @@ export async function fetchTypes(userId){
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
-export async function addTypes(userId, name){
- try {
-    const url = `${baseUrl}/addType?id=${userId}&name=${name}`;
+export async function addTypes(userId, name) {
+  try {
+    const url = `${baseUrl}/addType?userId=${userId}&name=${name}`;
 
     const response = await fetch(url, {
       method: 'POST',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       }
     });
 
@@ -88,25 +88,25 @@ export async function addTypes(userId, name){
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
 
-export async function updateTypes(userId, oldName, newName){
- try {
+export async function updateTypes(userId, oldName, newName) {
+  try {
     const url = `${baseUrl}/updateTypesByUser`;
 
     const response = await fetch(url, {
       method: 'PATCH',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       },
-       body: JSON.stringify({
-      id: userId,
-      oldName: oldName,
-      newName: newName
-    }),
+      body: JSON.stringify({
+        id: userId,
+        oldName: oldName,
+        newName: newName
+      }),
     });
 
     if (response.ok) {
@@ -116,24 +116,24 @@ export async function updateTypes(userId, oldName, newName){
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
 
-export async function deleteTypes(userId, name){
- try {
+export async function deleteTypes(userId, name) {
+  try {
     const url = `${baseUrl}/deleteTypesByUser`;
 
     const response = await fetch(url, {
       method: 'PATCH',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       },
-       body: JSON.stringify({
-      id: userId,
-      name: name
-    }),
+      body: JSON.stringify({
+        id: userId,
+        name: name
+      }),
     });
 
     if (response.ok) {
@@ -143,19 +143,19 @@ export async function deleteTypes(userId, name){
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
 
-export async function fetchTotals(userId){
- try {
+export async function fetchTotals(userId) {
+  try {
     const url = `${baseUrl}/getTotalsByUser?id=${userId}`;
 
     const response = await fetch(url, {
       method: 'GET',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       }
     });
 
@@ -166,18 +166,18 @@ export async function fetchTotals(userId){
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
-export async function addTotals(userId, name, date, value){
- try {
-    const url = `${baseUrl}/addTotal?id=${userId}&name=${name}&date=${date}&value=${value}`;
+export async function addTotals(userId, name, date, value) {
+  try {
+    const url = `${baseUrl}/addTotal?userId=${userId}&name=${name}&date=${date}&value=${value}`;
 
     const response = await fetch(url, {
       method: 'POST',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       }
     });
 
@@ -188,28 +188,28 @@ export async function addTotals(userId, name, date, value){
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
-export async function updateTotals(userId, oldName, newName, oldDate, newDate, oldValue, newValue){
- try {
+export async function updateTotals(userId, oldName, newName, oldDate, newDate, oldValue, newValue) {
+  try {
     const url = `${baseUrl}/updateTotalsByUser`;
 
     const response = await fetch(url, {
       method: 'PATCH',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       },
-       body: JSON.stringify({
-      id: userId,
-      oldName: oldName,
-      newName: newName,
-      oldDate: oldDate,
-      newDate: newDate,
-      oldValue: oldValue,
-      newValue: newValue
-    }),
+      body: JSON.stringify({
+        id: userId,
+        oldName: oldName,
+        newName: newName,
+        oldDate: oldDate,
+        newDate: newDate,
+        oldValue: oldValue,
+        newValue: newValue
+      }),
     });
 
     if (response.ok) {
@@ -219,26 +219,26 @@ export async function updateTotals(userId, oldName, newName, oldDate, newDate, o
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
 
-export async function deleteTotal(userId, name, date, value){
- try {
+export async function deleteTotal(userId, name, date, value) {
+  try {
     const url = `${baseUrl}/deleteTotalsByUser`;
 
     const response = await fetch(url, {
       method: 'PATCH',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       },
-       body: JSON.stringify({
-      id: userId,
-      name: name,
-      date: date, 
-      value: value
-    }),
+      body: JSON.stringify({
+        id: userId,
+        name: name,
+        date: date,
+        value: value
+      }),
     });
 
     if (response.ok) {
@@ -248,19 +248,19 @@ export async function deleteTotal(userId, name, date, value){
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
 
-export async function fetchTransactions(userId){
- try {
+export async function fetchTransactions(userId) {
+  try {
     const url = `${baseUrl}/getTransactionByUser?id=${userId}`;
 
     const response = await fetch(url, {
       method: 'GET',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       }
     });
 
@@ -271,18 +271,18 @@ export async function fetchTransactions(userId){
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
-export async function addTransaction(userId, typeName, date, value, isRevenue){
- try {
+export async function addTransaction(userId, typeName, date, value, isRevenue) {
+  try {
     const url = `${baseUrl}/addTransaction?id=${userId}&date=${date}&typeName=${typeName}&value=${value}&isRevenue=${isRevenue}`;
 
     const response = await fetch(url, {
       method: 'POST',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       }
     });
 
@@ -293,29 +293,29 @@ export async function addTransaction(userId, typeName, date, value, isRevenue){
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
-export async function updateTransaction(userId, oldDate, oldType, oldValue,oldIsRevenue, newDate, newType, newValue, newIsRevenue){
- try {
+export async function updateTransaction(userId, oldDate, oldType, oldValue, oldIsRevenue, newDate, newType, newValue, newIsRevenue) {
+  try {
     const url = `${baseUrl}/updateTransactionByUser`;
 
     const response = await fetch(url, {
       method: 'PATCH',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       },
-       body: JSON.stringify({
-      id: userId,
-      oldDate: oldDate,
-      oldType: oldType,
-      oldValue: oldValue,
-      oldIsRevenue: oldIsRevenue,
-      newDate: newDate,
-      newType: newType,
-      newValue: newValue,
-      newIsRevenue: newIsRevenue
+      body: JSON.stringify({
+        id: userId,
+        oldDate: oldDate,
+        oldType: oldType,
+        oldValue: oldValue,
+        oldIsRevenue: oldIsRevenue,
+        newDate: newDate,
+        newType: newType,
+        newValue: newValue,
+        newIsRevenue: newIsRevenue
       }),
     });
 
@@ -326,26 +326,26 @@ export async function updateTransaction(userId, oldDate, oldType, oldValue,oldIs
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }
 
 
-export async function deleteTransactionByUser(userId, date, typeName, value, isRevenue){
- try {
+export async function deleteTransactionByUser(userId, date, typeName, value, isRevenue) {
+  try {
     const url = `${baseUrl}/deleteTransactionByUser`;
 
     const response = await fetch(url, {
       method: 'PATCH',
-      headers: { 
-        'Accept': 'application/json' 
+      headers: {
+        'Accept': 'application/json'
       },
-       body: JSON.stringify({
-      id: userId,
-      date: date,
-      typeName: typeName,
-      value: value, 
-      isRevenue: isRevenue
+      body: JSON.stringify({
+        id: userId,
+        date: date,
+        typeName: typeName,
+        value: value,
+        isRevenue: isRevenue
       }),
     });
 
@@ -356,6 +356,6 @@ export async function deleteTransactionByUser(userId, date, typeName, value, isR
       return "error";
     }
   } catch (error) {
-        return error;
-    }
+    return error;
+  }
 }

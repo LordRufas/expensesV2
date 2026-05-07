@@ -1,7 +1,6 @@
-import styles from  "../css/App.css";
+import styles from "../css/App.css";
 
-export function TotalTable({info, setInfo,userId})
-{
+export function TotalTable({ info, setInfo, userId }) {
   return (
     <table border="1">
       <thead>
@@ -11,27 +10,26 @@ export function TotalTable({info, setInfo,userId})
           Valor
         </tr>
       </thead>{
-info &&
-      <tbody>
-            {
-            info.map((data) =>(<>
-            <tr>
-               <input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeTotal(e.target.value, data, "name", info, setInfo, userId)}/> 
-               <input type="number" value={data.value} placeholder={data.value} onChange={(e) => changeTotal(e.target.value, data, "value", info, setInfo, userId)}/> 
-             <button onClick={() => deleteValue(data, info, setInfo)}>apagar</button>    
+        info &&
+        <tbody>
+          {
+            info.map((data) => (<>
+              <tr>
+                <input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeTotal(e.target.value, data, "name", info, setInfo, userId)} />
+                <input type="number" value={data.value} placeholder={data.value} onChange={(e) => changeTotal(e.target.value, data, "value", info, setInfo, userId)} />
+                <button onClick={() => deleteValue(data, info, setInfo)}>apagar</button>
               </tr>
-           
-              
-        </>)) 
-        }
+
+
+            </>))
+          }
         </tbody>
-}
+      }
     </table>
   );
 }
 
-export function TransactionTable({info,userId, editMode, setInfo})
-{
+export function TransactionTable({ info, userId, editMode, setInfo }) {
   return (
     <table border="1">
       <thead>
@@ -43,26 +41,25 @@ export function TransactionTable({info,userId, editMode, setInfo})
           valor
         </tr>
       </thead>
-{
-info &&
-      <tbody>
-            {
-            info.map((data) =>(<>
-            <tr>
-            {data.date} { }
-            {data.typeName} { }
-            {data.value} { }
-           { editMode &&  <button onClick={() => deleteValue(data, info, setInfo)}>apagar</button>}</tr>
-        </>)) 
-        }
+      {
+        info &&
+        <tbody>
+          {
+            info.map((data) => (<>
+              <tr>
+                {data.date} { }
+                {data.typeName} { }
+                {data.value} { }
+                {editMode && <button onClick={() => deleteValue(data, info, setInfo)}>apagar</button>}</tr>
+            </>))
+          }
         </tbody>
-}
+      }
     </table>
   );
 }
 
-export function TypesTable({info, setInfo, userId})
-{
+export function TypesTable({ info, setInfo, userId }) {
   return (
     <table border="1">
       <thead>
@@ -70,84 +67,85 @@ export function TypesTable({info, setInfo, userId})
           Nome
         </tr>
       </thead>
-{
-info &&
-      <tbody>
-            {
-            info.map((data) =>(<>
-            <tr>
-            <input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeType(e.target.value, data.name, info, setInfo, userId)}/> 
-              <button onClick={() => deleteValue(data, info, setInfo)}>apagar</button></tr>
-        </>)) 
-        }
+      {
+        info &&
+        <tbody>
+          {
+            info.map((data) => (<>
+              <tr>
+                <input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeType(e.target.value, data.name, info, setInfo, userId)} />
+                <button onClick={() => deleteValue(data, info, setInfo)}>apagar</button></tr>
+            </>))
+          }
         </tbody>
-}
+      }
     </table>
   );
 }
 
 
-export function changeType(newValue, oldValue, types, setTypes, userId){
+export function changeType(newValue, oldValue, types, setTypes, userId) {
 
-    const filteredInfo = types.filter(item => {
-   if (item.name !== oldValue) {
-    return item;
+  const filteredInfo = types.filter(item => {
+    if (item.name !== oldValue) {
+      return item;
     }
 
   });
-    const newType = {
-  userId: userId,
-  name: newValue 
-};
+  const newType = {
+    userId: userId,
+    name: newValue
+  };
 
-const newTypes = [...filteredInfo, newType];
+  const newTypes = [...filteredInfo, newType];
 
 
-     setTypes(newTypes.sort((a, b) => {
-  return a.name.localeCompare(b.name);
-}));
+  setTypes(newTypes.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  }));
 
 }
 
-export function changeTotal(newValue, oldValue,property, totals, setTotals, userId){
+export function changeTotal(newValue, oldValue, property, totals, setTotals, userId) {
 
- const filteredInfo = totals.filter(item => {
-   if (item.name !== oldValue.name) {
-    return item;
-    }});
+  const filteredInfo = totals.filter(item => {
+    if (item.name !== oldValue.name) {
+      return item;
+    }
+  });
   let newTotal = [];
 
-if(property === "name")
+  if (property === "name")
     newTotal = {
-  date: oldValue.date,
-  name: newValue ,
-   userId: userId,
-  value: oldValue.value
+      date: oldValue.date,
+      name: newValue,
+      userId: userId,
+      value: oldValue.value
 
-};
-else
-   newTotal = {
-  date: oldValue.date,
-  name: oldValue.name ,
-   userId: userId,
-   value: newValue
-  
-};
+    };
+  else
+    newTotal = {
+      date: oldValue.date,
+      name: oldValue.name,
+      userId: userId,
+      value: newValue
+
+    };
 
 
-const newTotals = [...filteredInfo, newTotal];
+  const newTotals = [...filteredInfo, newTotal];
 
-     setTotals(newTotals.sort((a, b) => {
-  return a.name.localeCompare(b.name);
-}))
+  setTotals(newTotals.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  }))
 
 }
 
 
 
 
-export function deleteValue( oldValue, info, setInfo){
- const updated = info.filter(item => item !== oldValue);
+export function deleteValue(oldValue, info, setInfo) {
+  const updated = info.filter(item => item !== oldValue);
   setInfo(updated);
 
 }
