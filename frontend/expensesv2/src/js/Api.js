@@ -210,8 +210,8 @@ export async function updateTotals(userId, oldName, newName, oldDate, newDate, o
         "newName": newName,
         "oldDate": oldDate,
         "newDate": newDate,
-        "oldValue": oldValue,
-        "newValue": newValue
+        "oldValue": Number(oldValue),
+        "newValue": Number(newValue)
       }),
     });
 

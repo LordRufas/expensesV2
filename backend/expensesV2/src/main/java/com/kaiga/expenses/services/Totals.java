@@ -84,7 +84,7 @@ public class Totals {
             return new BaseResponse(USER_NOT_FOUND, 404);
         if(searchData(String.valueOf(userId), oldName, oldDate, oldValue).equals(TOTAL_NOT_FOUND))
             return new BaseResponse(TOTAL_NOT_FOUND, 200);
-        if(searchData(String.valueOf(userId), newName, newDate, newValue).equals(TOTAL_ALREADY_EXISTS))
+        if(!oldName.equals(newName) && searchData(String.valueOf(userId), newName, newDate, newValue).equals(TOTAL_ALREADY_EXISTS))
             return new BaseResponse(TOTAL_ALREADY_EXISTS, 200);
 
         List<Object> oldParams = new ArrayList<>();

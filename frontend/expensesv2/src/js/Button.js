@@ -94,20 +94,10 @@ export function CreateUserButton({ setPage, password, username, SetErrorMessage 
   return <button onClick={handleCreateUser}>Criar</button>;
 }
 
-//TODO
-export function SaveButton({ totals, date, transactions }) {
-
-  const handleLogin = async () => {
-
-
-  }
-  return <button onClick={handleLogin}>Gravar</button>;
-}
-
-
 export function Combobox({ info, value, setValue, placeholder }) {
 
-  return (
+  return (<>
+    { info !== undefined ?
     <select
       value={value}
       onChange={(e) => setValue(e.target.value)}
@@ -122,11 +112,22 @@ export function Combobox({ info, value, setValue, placeholder }) {
           {item.name}
         </option>
       ))}
-    </select>
+    </select> :
+     <select
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      disabled={!info || info.length === 0}
+    >
+      <option value="">
+        {`${placeholder}`}
+      </option>
+      </select>
+  }
+  </>
   );
 }
 
-//TODO
+
 export function AddTransactionButton({ userId, date, value, type, total, isRevenue, setErrorMessage, transactions, setTransaction, totals, setTotals }) {
   const addNewTransaction = async () => {
     if (date === undefined || value === undefined || type === undefined || total === undefined ||
@@ -148,7 +149,7 @@ export function AddTransactionButton({ userId, date, value, type, total, isReven
             total: total
           };
 
-          updateTotal(value, total, totals, setTotals, isRevenue);
+          updateTotal(value, total, totals, setTotals, isRevenue, setErrorMessage);
           setTransaction(prev => [...transactions, newTransaction]);
         } else {
           setErrorMessage(`Erro generico: ${response.statusMessage}`);
@@ -160,8 +161,8 @@ export function AddTransactionButton({ userId, date, value, type, total, isReven
 }
 
 
-//TODO
-export function updateTotal(addValue, oldValue, totals, setTotals, isRevenue) {
+
+export async function updateTotal(addValue, oldValue, totals, setTotals, isRevenue, setErrorMessage) {
 
   const oldTotal = totals.filter(item => {
     if (item.name === oldValue) {
@@ -188,12 +189,17 @@ export function updateTotal(addValue, oldValue, totals, setTotals, isRevenue) {
     value: newValue.toFixed(2)
 
   };
+  const response = await API.updateTotals(newTotal.userId, oldTotal[0].name, newTotal.name, oldTotal[0].date,newTotal.date, oldTotal[0].value, newValue.toFixed(2))
 
-  const newTotals = [...filteredInfo, newTotal];
+  if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
 
-  setTotals(newTotals.sort((a, b) => {
-    return a.name.localeCompare(b.name);
-  }))
+    const newTotals = [...filteredInfo, newTotal];
+
+    setTotals(newTotals.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    }))
+  } else
+    setErrorMessage(response.statusMessage)
 }
 
 
@@ -204,6 +210,7 @@ export function AddTotalButton({ userId, date, value, name, setErrorMessage, tot
       date === "" || value === "" || name === "")
       setErrorMessage("Os campos não estão preenchidos")
     else {
+      if(totals !== undefined && totals.length > 0){
       const exists = totals.some(
         (t) => t.name.toLowerCase() === name.toLowerCase()
       );
@@ -213,7 +220,7 @@ export function AddTotalButton({ userId, date, value, name, setErrorMessage, tot
         return;
       }
 
-
+    }
 
       const response = await API.addTotals(userId, name, getCurrentDate(), value);
 
@@ -226,7 +233,7 @@ export function AddTotalButton({ userId, date, value, name, setErrorMessage, tot
           name: name
         };
 
-        setTotals(prev => [...totals, newTotal]);
+        setTotals(prev =>  [...(prev || []), newTotal]);
         setErrorMessage("");
       }
       else
@@ -243,6 +250,7 @@ export function AddTypeButton({ userId, name, setErrorMessage, types, setTypes }
     if (name === undefined || name === "")
       setErrorMessage("Os campos não estão preenchidos")
     else {
+        if(types !== undefined && types.length > 0){
       const exists = types.some(
         (t) => t.name.toLowerCase() === name.toLowerCase()
       );
@@ -252,7 +260,7 @@ export function AddTypeButton({ userId, name, setErrorMessage, types, setTypes }
         return;
       }
 
-
+    }
       const response = await API.addTypes(userId, name);
 
       if (response.statusCode === 200 && response.statusMessage === "Type added with success") {
@@ -263,7 +271,7 @@ export function AddTypeButton({ userId, name, setErrorMessage, types, setTypes }
           name: name
         };
 
-        setTypes(prev => [...types, newType]);
+       setTypes(prev => [...(prev || []), newType]);
         setErrorMessage("")
       }
       else
@@ -284,7 +292,7 @@ export function ErrorMessage({ errorMessage }) {
   </>)
 }
 
-export function GetTransactionByUserButton({ date, userId, setTransaction, setErrorMessage }) {
+export function GetTransactionByUserButton({ date, userId, setTransaction,setTotals, setTypes, setErrorMessage }) {
 
   const fetchUserTransactions = async () => {
     if (date === "")
@@ -294,8 +302,11 @@ export function GetTransactionByUserButton({ date, userId, setTransaction, setEr
       if (response.statusCode === 200 && response.statusMessage === "OK" && response.response.transactions.length > 0) {
         setErrorMessage("");
         const transactions = filterTransactions(date, response.response.transactions);
-        if (transactions.length > 0)
+        if (transactions.length > 0){
           setTransaction(transactions)
+          updateTotals(transactions, setTotals)
+          updateTypes(transactions, setTypes)
+        }
         else
           setErrorMessage("Não existe transações para esse mes");
       } else {
@@ -323,14 +334,11 @@ function getCurrentDate() {
 
   const formattedDate = `${year}-${month}`;
 
-  console.log(formattedDate);
   return formattedDate;
 }
 
 
 
-
-//TODO
 export function DeleteTotalButton({ userId, data, info, setInfo, setErrorMessage }) {
 
   const deleteTotal = async () => {
@@ -348,7 +356,7 @@ export function DeleteTotalButton({ userId, data, info, setInfo, setErrorMessage
 
 }
 
-export function DeleteTypeButton({userId, data, info, setInfo, setErrorMessage}) {
+export function DeleteTypeButton({ userId, data, info, setInfo, setErrorMessage }) {
 
   const deleteType = async () => {
 
@@ -366,7 +374,7 @@ export function DeleteTypeButton({userId, data, info, setInfo, setErrorMessage})
 }
 
 
-export function DeleteTransactionButton({userId, data, info, setInfo, setErrorMessage}) {
+export function DeleteTransactionButton({ userId, data, info, setInfo, setErrorMessage }) {
 
   const deleteTransaction = async () => {
 
@@ -389,4 +397,14 @@ export function deleteValue(oldValue, info, setInfo) {
   const updated = info.filter(item => item !== oldValue);
   setInfo(updated);
 
+}
+
+function updateTotals({transactions, setTotals}){
+  //ToDo
+  return;
+}
+
+function updateTypes({transactions, setTypes}){
+  //ToDo
+  return;
 }

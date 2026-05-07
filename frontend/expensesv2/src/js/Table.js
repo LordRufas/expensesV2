@@ -2,6 +2,7 @@ import { useSearchParams } from "react-router-dom";
 import styles from "../css/App.css";
 
 import * as Buttons from "./Button";
+import * as API from "./Api"
 import { useState } from "react";
 
 export function TotalTable({ info, setInfo, userId, setErrorMessage }) {
@@ -42,6 +43,8 @@ export function TransactionTable({ info, userId, editMode, setInfo, setErrorMess
 
           tipo
 
+          total
+
           valor
         </tr>
       </thead>
@@ -53,8 +56,9 @@ export function TransactionTable({ info, userId, editMode, setInfo, setErrorMess
               <tr>
                 {data.date} { }
                 {data.typeName} { }
+                {data.total} { }
                 {data.value} { }
-                {editMode && <Buttons.DeleteTransactionButton userId={userId} data= {data}  info ={info} setInfo ={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton >}</tr>
+                {editMode && <Buttons.DeleteTransactionButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton >}</tr>
             </>))
           }
         </tbody>
@@ -78,7 +82,7 @@ export function TypesTable({ info, setInfo, userId, setErrorMessage }) {
             info.map((data) => (<>
               <tr>
                 <input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeType(e.target.value, data.name, info, setInfo, userId)} />
-                <Buttons.DeleteTypeButton userId={userId} data= {data}  info ={info} setInfo ={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTypeButton ></tr>
+                <Buttons.DeleteTypeButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTypeButton ></tr>
             </>))
           }
         </tbody>
@@ -110,7 +114,7 @@ export function changeType(newValue, oldValue, types, setTypes, userId) {
 
 }
 
-export function changeTotal(newValue, oldValue, property, totals, setTotals, userId) {
+export async function changeTotal(newValue, oldValue, property, totals, setTotals, userId) {
 
   const filteredInfo = totals.filter(item => {
     if (item.name !== oldValue.name) {
@@ -137,10 +141,55 @@ export function changeTotal(newValue, oldValue, property, totals, setTotals, use
     };
 
 
-  const newTotals = [...filteredInfo, newTotal];
+  
 
-  setTotals(newTotals.sort((a, b) => {
-    return a.name.localeCompare(b.name);
-  }))
+  const response = await API.updateTotals(newTotal.userId, oldValue.name, newTotal.name, oldValue.date, newTotal.date, Number(oldValue.value), Number(newTotal.value).toFixed(2))
+  if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
+    const newTotals = [...filteredInfo, newTotal];
+    setTotals(newTotals.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    }))
 
+  }
+
+}
+
+export async function updateTotal(addValue, oldValue, totals, setTotals, isRevenue, setErrorMessage) {
+
+  const oldTotal = totals.filter(item => {
+    if (item.name === oldValue) {
+      return item;
+    }
+  });
+
+  const filteredInfo = totals.filter(item => {
+    if (item.name !== oldValue) {
+      return item;
+    }
+  });
+  let newTotal = [];
+  let newValue = isRevenue
+    ? Number(oldTotal[0].value) + Number(addValue)
+    : Number(oldTotal[0].value) - Number(addValue);
+
+
+
+  newTotal = {
+    date: oldTotal[0].date,
+    name: oldTotal[0].name,
+    userId: oldTotal[0].userId,
+    value: newValue.toFixed(2)
+
+  };
+  const response = await API.updateTotals(newTotal.userId, oldTotal[0].name, newTotal.name, oldTotal[0].date, newTotal.date, oldTotal[0].value, newValue.toFixed(2))
+
+  if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
+
+    const newTotals = [...filteredInfo, newTotal];
+
+    setTotals(newTotals.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    }))
+  } else
+    setErrorMessage(response.statusMessage)
 }

@@ -8,7 +8,7 @@ import userEvent from "@testing-library/user-event";
 export function MainPage({ username, setPage, userId }) {
   const [totals, setTotals] = useState([]);
   const [types, setTypes] = useState([]);
-  const [errorMessage, SetErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [transactions, setTransactions] = useState([]);
 
 
@@ -42,10 +42,6 @@ export function MainPage({ username, setPage, userId }) {
         <TotalDiv userId={userId} totals={totals} setTotals={setTotals} />
         <TransactionDiv userId={userId} totals={totals} setTotals={setTotals} types={types} transactions={transactions} setTransactions={setTransactions} />
         <TypeDiv userId={userId} types={types} setTypes={setTypes} />
-      </div>
-
-      <div>
-        <Buttons.SaveButton />
       </div>
     </>
   );
