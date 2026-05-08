@@ -97,32 +97,32 @@ export function CreateUserButton({ setPage, password, username, SetErrorMessage 
 export function Combobox({ info, value, setValue, placeholder }) {
 
   return (<>
-    { info !== undefined ?
-    <select
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      disabled={!info || info.length === 0}
-    >
-      <option value="">
-        {info.length === 0 ? "Loading..." : `${placeholder}`}
-      </option>
-
-      {info.map((item) => (
-        <option key={item.name} value={item.name}>
-          {item.name}
+    {info !== undefined ?
+      <select
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        disabled={!info || info.length === 0}
+      >
+        <option value="">
+          {info.length === 0 ? "Loading..." : `${placeholder}`}
         </option>
-      ))}
-    </select> :
-     <select
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      disabled={!info || info.length === 0}
-    >
-      <option value="">
-        {`${placeholder}`}
-      </option>
+
+        {info.map((item) => (
+          <option key={item.name} value={item.name}>
+            {item.name}
+          </option>
+        ))}
+      </select> :
+      <select
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        disabled={!info || info.length === 0}
+      >
+        <option value="">
+          {`${placeholder}`}
+        </option>
       </select>
-  }
+    }
   </>
   );
 }
@@ -189,7 +189,7 @@ export async function updateTotal(addValue, oldValue, totals, setTotals, isReven
     value: newValue.toFixed(2)
 
   };
-  const response = await API.updateTotals(newTotal.userId, oldTotal[0].name, newTotal.name, oldTotal[0].date,newTotal.date, oldTotal[0].value, newValue.toFixed(2))
+  const response = await API.updateTotals(newTotal.userId, oldTotal[0].name, newTotal.name, oldTotal[0].date, newTotal.date, oldTotal[0].value, newValue.toFixed(2))
 
   if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
 
@@ -210,17 +210,17 @@ export function AddTotalButton({ userId, date, value, name, setErrorMessage, tot
       date === "" || value === "" || name === "")
       setErrorMessage("Os campos não estão preenchidos")
     else {
-      if(totals !== undefined && totals.length > 0){
-      const exists = totals.some(
-        (t) => t.name.toLowerCase() === name.toLowerCase()
-      );
+      if (totals !== undefined && totals.length > 0) {
+        const exists = totals.some(
+          (t) => t.name.toLowerCase() === name.toLowerCase()
+        );
 
-      if (exists) {
-        setErrorMessage("Total já existe");
-        return;
+        if (exists) {
+          setErrorMessage("Total já existe");
+          return;
+        }
+
       }
-
-    }
 
       const response = await API.addTotals(userId, name, getCurrentDate(), value);
 
@@ -233,7 +233,7 @@ export function AddTotalButton({ userId, date, value, name, setErrorMessage, tot
           name: name
         };
 
-        setTotals(prev =>  [...(prev || []), newTotal]);
+        setTotals(prev => [...(prev || []), newTotal]);
         setErrorMessage("");
       }
       else
@@ -250,17 +250,17 @@ export function AddTypeButton({ userId, name, setErrorMessage, types, setTypes }
     if (name === undefined || name === "")
       setErrorMessage("Os campos não estão preenchidos")
     else {
-        if(types !== undefined && types.length > 0){
-      const exists = types.some(
-        (t) => t.name.toLowerCase() === name.toLowerCase()
-      );
+      if (types !== undefined && types.length > 0) {
+        const exists = types.some(
+          (t) => t.name.toLowerCase() === name.toLowerCase()
+        );
 
-      if (exists) {
-        setErrorMessage("Tipo já existe");
-        return;
+        if (exists) {
+          setErrorMessage("Tipo já existe");
+          return;
+        }
+
       }
-
-    }
       const response = await API.addTypes(userId, name);
 
       if (response.statusCode === 200 && response.statusMessage === "Type added with success") {
@@ -271,7 +271,7 @@ export function AddTypeButton({ userId, name, setErrorMessage, types, setTypes }
           name: name
         };
 
-       setTypes(prev => [...(prev || []), newType]);
+        setTypes(prev => [...(prev || []), newType]);
         setErrorMessage("")
       }
       else
@@ -292,7 +292,7 @@ export function ErrorMessage({ errorMessage }) {
   </>)
 }
 
-export function GetTransactionByUserButton({ date, userId, setTransaction,setTotals, setTypes, setErrorMessage }) {
+export function GetTransactionByUserButton({ date, userId, setTransaction, setResumes, setErrorMessage }) {
 
   const fetchUserTransactions = async () => {
     if (date === "")
@@ -302,10 +302,9 @@ export function GetTransactionByUserButton({ date, userId, setTransaction,setTot
       if (response.statusCode === 200 && response.statusMessage === "OK" && response.response.transactions.length > 0) {
         setErrorMessage("");
         const transactions = filterTransactions(date, response.response.transactions);
-        if (transactions.length > 0){
+        if (transactions.length > 0) {
           setTransaction(transactions)
-          updateTotals(transactions, setTotals)
-          updateTypes(transactions, setTypes)
+          updateResumes(transactions, setResumes)
         }
         else
           setErrorMessage("Não existe transações para esse mes");
@@ -399,12 +398,27 @@ export function deleteValue(oldValue, info, setInfo) {
 
 }
 
-function updateTotals({transactions, setTotals}){
-  //ToDo
-  return;
-}
+function updateResumes(transactions, setResumes) {
 
-function updateTypes({transactions, setTypes}){
-  //ToDo
+  const groupedTransactions = transactions.reduce((acc, current) => {
+    // Find if the typeName already exists in our accumulator
+    const existingType = acc.find(item => item.name === current.typeName);
+
+    if (existingType) {
+      if (current.isRevenue === "true")
+        existingType.value += parseFloat(current.value);
+      else
+        existingType.value -= parseFloat(current.value);
+    } else {
+      acc.push({
+        name: current.typeName,
+        value: parseFloat(current.value)
+      });
+    }
+
+    return acc;
+  }, []);
+
+  setResumes(groupedTransactions);
   return;
 }

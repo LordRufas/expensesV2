@@ -5,6 +5,32 @@ import * as Buttons from "./Button";
 import * as API from "./Api"
 import { useState } from "react";
 
+export function ResumeTable({info, setInfo}){
+   return (
+    <table border="1">
+      <thead>
+        <tr>
+          <a>Nome </a>
+          <a>Valor </a>
+        </tr>
+      </thead>
+      {
+        info &&
+        <tbody>
+          {
+            info.map((data) => (<>
+              <tr>
+                <a>{data.name} </a>
+                <a>{data.value} </a>
+                  </tr>
+            </>))
+          }
+        </tbody>
+      }
+    </table>
+  );
+}
+
 export function TotalTable({ info, setInfo, userId, setErrorMessage }) {
   return (
     <table border="1">
@@ -39,13 +65,13 @@ export function TransactionTable({ info, userId, editMode, setInfo, setErrorMess
     <table border="1">
       <thead>
         <tr>
-          data
+          <a> data </a>
 
-          tipo
+          <a> tipo </a>
 
-          total
+          {editMode && <a> total </a>}
 
-          valor
+          <a> valor </a>
         </tr>
       </thead>
       {
@@ -141,7 +167,7 @@ export async function changeTotal(newValue, oldValue, property, totals, setTotal
     };
 
 
-  
+
 
   const response = await API.updateTotals(newTotal.userId, oldValue.name, newTotal.name, oldValue.date, newTotal.date, Number(oldValue.value), Number(newTotal.value).toFixed(2))
   if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
