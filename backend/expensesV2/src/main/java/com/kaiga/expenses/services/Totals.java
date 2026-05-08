@@ -16,6 +16,18 @@ public class Totals {
 
     private final Core core;
 
+    private static final String USERID = "userId";
+
+    private static final String DATE = "date";
+
+    private static final String NAME = "name";
+
+    private static final String VALUE = "value";
+
+    private static final String ID = "id";
+
+
+
     public Totals(Core core){
         this.core = core;
     }
@@ -57,10 +69,10 @@ public class Totals {
         for(ExcelRow row : sheet.getExcelRows()){
             if(row.getData().get(0).equals(String.valueOf(userId))){
                 Map<String, String> info = new HashMap<>();
-                info.put("userId", row.getData().get(0));
-                info.put("date",row.getData().get(1));
-                info.put("name",row.getData().get(2));
-                info.put("value",row.getData().get(3));
+                info.put(USERID, row.getData().get(0));
+                info.put(DATE,row.getData().get(1));
+                info.put(NAME,row.getData().get(2));
+                info.put(VALUE,row.getData().get(3));
                 totals.add(info);
             }
 
@@ -84,7 +96,7 @@ public class Totals {
             return new BaseResponse(USER_NOT_FOUND, 404);
         if(searchData(String.valueOf(userId), oldName, oldDate, oldValue).equals(TOTAL_NOT_FOUND))
             return new BaseResponse(TOTAL_NOT_FOUND, 200);
-        if(!oldName.equals(newName) && searchData(String.valueOf(userId), newName, newDate, newValue).equals(TOTAL_ALREADY_EXISTS))
+        if(!Objects.equals(oldName, newName) && searchData(String.valueOf(userId), newName, newDate, newValue).equals(TOTAL_ALREADY_EXISTS))
             return new BaseResponse(TOTAL_ALREADY_EXISTS, 200);
 
         List<Object> oldParams = new ArrayList<>();
@@ -138,7 +150,7 @@ public class Totals {
         List<String> headerNames = new ArrayList<>();
 
         if(userId != null) {
-            headerNames.add("id");
+            headerNames.add(ID);
             elements.add(userId);
             if (!core.rowExists(USERS.getId(), elements,headerNames))
                 return USER_NOT_FOUND;
@@ -147,10 +159,10 @@ public class Totals {
             headerNames.clear();
             elements.clear();
 
-            headerNames.add("userId");
-            headerNames.add("date");
-            headerNames.add("name");
-            headerNames.add("value");
+            headerNames.add(USERID);
+            headerNames.add(DATE);
+            headerNames.add(NAME);
+            headerNames.add(VALUE);
             elements.add(userId);
             elements.add(date);
             elements.add(total);
@@ -163,9 +175,9 @@ public class Totals {
             headerNames.clear();
             elements.clear();
 
-            headerNames.add("userId");
-            headerNames.add("date");
-            headerNames.add("name");
+            headerNames.add(USERID);
+            headerNames.add(DATE);
+            headerNames.add(NAME);
             elements.add(userId);
             elements.add(date);
             elements.add(total);

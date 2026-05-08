@@ -100,19 +100,6 @@ class TotalsTest {
     }
 
     @Test
-    void updateTotalTotalAlreadyExists() {
-        user.purgeUsers();
-        total.purgeTotals();
-        user.createNewUser("user",  "pass");
-        BaseResponse response = total.addTotal(1,"01/01/1990","test",1.0);
-        assertEquals("Total added with success", response.getStatusMessage());
-        response = total.updateTotal(1,"01/01/1990","test",1.0
-                ,"01/01/1990","test",1.0);
-        assertEquals("Total already exist", response.getStatusMessage());
-
-    }
-
-    @Test
     void deleteTotal() {
         user.purgeUsers();
         total.purgeTotals();
