@@ -1,17 +1,13 @@
-import { useSearchParams } from "react-router-dom";
-import styles from "../css/App.css";
-
 import * as Buttons from "./Button";
 import * as API from "./Api"
-import { useState } from "react";
 
-export function ResumeTable({info, setInfo}){
-   return (
+export function ResumeTable({ info, setInfo }) {
+  return (
     <table border="1">
       <thead>
         <tr>
-          <a>Nome </a>
-          <a>Valor </a>
+          <th>Nome </th>
+          <th>Valor </th>
         </tr>
       </thead>
       {
@@ -20,9 +16,9 @@ export function ResumeTable({info, setInfo}){
           {
             info.map((data) => (<>
               <tr>
-                <a>{data.name} </a>
-                <a>{data.value} </a>
-                  </tr>
+                <td>{data.name}</td>
+                <td>{data.value} </td>
+              </tr>
             </>))
           }
         </tbody>
@@ -36,9 +32,9 @@ export function TotalTable({ info, setInfo, userId, setErrorMessage }) {
     <table border="1">
       <thead>
         <tr>
-          Nome
-
-          Valor
+          <th>Nome</th>
+          <th>Valor</th>
+          <th></th>
         </tr>
       </thead>{
         info &&
@@ -46,9 +42,9 @@ export function TotalTable({ info, setInfo, userId, setErrorMessage }) {
           {
             info.map((data) => (<>
               <tr>
-                <input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeTotal(e.target.value, data, "name", info, setInfo, userId)} />
-                <input type="number" value={data.value} placeholder={data.value} onChange={(e) => changeTotal(e.target.value, data, "value", info, setInfo, userId)} />
-                <Buttons.DeleteTotalButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTotalButton>
+                <td><input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeTotal(e.target.value, data, "name", info, setInfo, userId)} /></td>
+                <td><input type="number" value={data.value} placeholder={data.value} onChange={(e) => changeTotal(e.target.value, data, "value", info, setInfo, userId)} /></td>
+                <td><Buttons.DeleteTotalButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTotalButton></td>
               </tr>
 
 
@@ -65,13 +61,14 @@ export function TransactionTable({ info, userId, editMode, setInfo, setErrorMess
     <table border="1">
       <thead>
         <tr>
-          <a> data </a>
+          <th> data </th>
 
-          <a> tipo </a>
+          <th> tipo </th>
 
-          {editMode && <a> total </a>}
+          {editMode && <th> total </th>}
 
-          <a> valor </a>
+          <th> valor </th>
+          <th></th>
         </tr>
       </thead>
       {
@@ -80,11 +77,12 @@ export function TransactionTable({ info, userId, editMode, setInfo, setErrorMess
           {
             info.map((data) => (<>
               <tr>
-                {data.date} { }
-                {data.typeName} { }
-                {data.total} { }
-                {data.value} { }
-                {editMode && <Buttons.DeleteTransactionButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton >}</tr>
+                <td> {data.date} </td>
+                <td>{data.typeName} </td>
+                <td>{data.total} </td>
+                <td>{data.value} </td>
+                <td>{editMode && <Buttons.DeleteTransactionButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton >}</td>
+              </tr>
             </>))
           }
         </tbody>
@@ -107,8 +105,9 @@ export function TypesTable({ info, setInfo, userId, setErrorMessage }) {
           {
             info.map((data) => (<>
               <tr>
-                <input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeType(e.target.value, data.name, info, setInfo, userId)} />
-                <Buttons.DeleteTypeButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTypeButton ></tr>
+                <td> <input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeType(e.target.value, data.name, info, setInfo, userId)} /></td>
+                <td><Buttons.DeleteTypeButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTypeButton ></td>
+              </tr>
             </>))
           }
         </tbody>
@@ -120,12 +119,7 @@ export function TypesTable({ info, setInfo, userId, setErrorMessage }) {
 
 export function changeType(newValue, oldValue, types, setTypes, userId) {
 
-  const filteredInfo = types.filter(item => {
-    if (item.name !== oldValue) {
-      return item;
-    }
-
-  });
+  const filteredInfo = types.filter(item => item.name !== oldValue);
   const newType = {
     userId: userId,
     name: newValue
@@ -142,11 +136,7 @@ export function changeType(newValue, oldValue, types, setTypes, userId) {
 
 export async function changeTotal(newValue, oldValue, property, totals, setTotals, userId) {
 
-  const filteredInfo = totals.filter(item => {
-    if (item.name !== oldValue.name) {
-      return item;
-    }
-  });
+  const filteredInfo = totals.filter(item => item.name !== oldValue.name);
   let newTotal = [];
 
   if (property === "name")
@@ -182,17 +172,9 @@ export async function changeTotal(newValue, oldValue, property, totals, setTotal
 
 export async function updateTotal(addValue, oldValue, totals, setTotals, isRevenue, setErrorMessage) {
 
-  const oldTotal = totals.filter(item => {
-    if (item.name === oldValue) {
-      return item;
-    }
-  });
+  const oldTotal = totals.filter(item => item.name === oldValue);
 
-  const filteredInfo = totals.filter(item => {
-    if (item.name !== oldValue) {
-      return item;
-    }
-  });
+  const filteredInfo = totals.filter(item => item.name !== oldValue);
   let newTotal = [];
   let newValue = isRevenue
     ? Number(oldTotal[0].value) + Number(addValue)

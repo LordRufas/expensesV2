@@ -1,5 +1,4 @@
 import * as API from "./Api";
-import { useState } from "react";
 
 export function LogoutButton({ setPage }) {
   function goToPage() {
@@ -164,17 +163,9 @@ export function AddTransactionButton({ userId, date, value, type, total, isReven
 
 export async function updateTotal(addValue, oldValue, totals, setTotals, isRevenue, setErrorMessage) {
 
-  const oldTotal = totals.filter(item => {
-    if (item.name === oldValue) {
-      return item;
-    }
-  });
+  const oldTotal = totals.filter(item => item.name === oldValue);
 
-  const filteredInfo = totals.filter(item => {
-    if (item.name !== oldValue) {
-      return item;
-    }
-  });
+  const filteredInfo = totals.filter(item => item.name !== oldValue);
   let newTotal = [];
   let newValue = isRevenue
     ? Number(oldTotal[0].value) + Number(addValue)

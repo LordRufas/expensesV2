@@ -1,7 +1,7 @@
 
-import { use, useState } from "react";
+import { useState } from "react";
 import { LogoutButton, MainPageButton, Title, GetTransactionByUserButton, ErrorMessage } from "./Button";
-import { TypesTable, TotalTable, TransactionTable , ResumeTable} from "./Table";
+import {  TransactionTable , ResumeTable} from "./Table";
 
 export function HistoryPage({ username, setPage, userId }) {
   const [month, setMonth] = useState('');
