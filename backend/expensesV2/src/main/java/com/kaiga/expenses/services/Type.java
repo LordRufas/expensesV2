@@ -128,6 +128,12 @@ public class Type {
         core.purge(TYPE.getId());
     }
 
+    public BaseResponse purgeTotalsOut(int userID){
+        core.purge(TYPE.getId());
+        return new BaseResponse("OK", 200);
+    }
+
+
     private String searchData(String userId, String type){
         List<String> elements = new ArrayList<>();
         List<String> headerNames = new ArrayList<>();

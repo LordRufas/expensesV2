@@ -1,3 +1,4 @@
+import { useState } from "react";
 import * as API from "./Api";
 
 export function LogoutButton({ setPage }) {
@@ -14,7 +15,7 @@ export function ReturnToLoginPage({ setPage, setErrorMessage }) {
     setPage('login')
     setErrorMessage("");
   };
-  return (<> <button onClick={handleGoBack}>return</button></>)
+  return (<> <button onClick={handleGoBack}>Voltar</button></>)
 }
 
 
@@ -32,7 +33,7 @@ export function MainPageButton({ setPage }) {
     setPage('main')
   }
 
-  return (<><button class="headerButton" on onClick={goToPage}>Voltar à pagina principal</button></>)
+  return (<><button onClick={goToPage}>Voltar à pagina principal</button></>)
 }
 
 export function Title({ username }) {
@@ -46,7 +47,7 @@ export function NewUserButton({ setPage }) {
     setPage('newUser')
   };
 
-  return <button onClick={handleNewUser}>New User</button>;
+  return <button  onClick={handleNewUser}>Novo utilizador</button>;
 }
 
 
@@ -69,7 +70,7 @@ export function LoginButton({ setUsername, setPage, username, password, setPassw
       SetErrorMessage(`Erro generico: ${response.statusMessage}`);
   };
 
-  return <button onClick={handleLogin}>Login</button>;
+  return <button  onClick={handleLogin}>Login</button>;
 }
 
 
@@ -90,7 +91,7 @@ export function CreateUserButton({ setPage, password, username, SetErrorMessage 
     }
 
   }
-  return <button onClick={handleCreateUser}>Criar</button>;
+  return <button  onClick={handleCreateUser}>Criar</button>;
 }
 
 export function Combobox({ info, value, setValue, placeholder }) {
@@ -98,6 +99,7 @@ export function Combobox({ info, value, setValue, placeholder }) {
   return (<>
     {info !== undefined ?
       <select
+      class="calendar"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         disabled={!info || info.length === 0}
@@ -156,7 +158,7 @@ export function AddTransactionButton({ userId, date, value, type, total, isReven
       }
     }
   }
-  return (<><button onClick={addNewTransaction}>Adicionar</button></>)
+  return (<><button class="secundaryButtons" onClick={addNewTransaction}>Adicionar</button></>)
 }
 
 
@@ -192,6 +194,45 @@ export async function updateTotal(addValue, oldValue, totals, setTotals, isReven
   } else
     setErrorMessage(response.statusMessage)
 }
+
+
+export async function changeTotal(newValue, oldValue, property, totals, setTotals, userId) {
+
+  const filteredInfo = totals.filter(item => item.name !== oldValue.name);
+  let newTotal = [];
+
+  if (property === "name")
+    newTotal = {
+      date: oldValue.date,
+      name: newValue,
+      userId: userId,
+      value: oldValue.value
+
+    };
+  else
+    newTotal = {
+      date: oldValue.date,
+      name: oldValue.name,
+      userId: userId,
+      value: newValue
+
+    };
+
+
+
+
+  const response = await API.updateTotals(newTotal.userId, oldValue.name, newTotal.name, oldValue.date, newTotal.date, Number(oldValue.value), Number(newTotal.value).toFixed(2))
+  if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
+    const newTotals = [...filteredInfo, newTotal];
+    setTotals(newTotals.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    }))
+
+  }
+
+}
+
+
 
 
 export function AddTotalButton({ userId, date, value, name, setErrorMessage, totals, setTotals }) {
@@ -233,7 +274,7 @@ export function AddTotalButton({ userId, date, value, name, setErrorMessage, tot
 
     }
   }
-  return (<><button onClick={addNewTotal}>Adicionar</button></>)
+  return (<><button class="secundaryButtons" onClick={addNewTotal}>Adicionar</button></>)
 }
 
 export function AddTypeButton({ userId, name, setErrorMessage, types, setTypes }) {
@@ -270,7 +311,7 @@ export function AddTypeButton({ userId, name, setErrorMessage, types, setTypes }
 
     }
   }
-  return (<><button onClick={addNewType}>Adicionar</button></>)
+  return (<><button class="secundaryButtons" onClick={addNewType}>Adicionar</button></>)
 }
 
 
@@ -290,12 +331,16 @@ export function GetTransactionByUserButton({ date, userId, setTransaction, setRe
       setErrorMessage("A data tem que estar preenchida")
     else {
       const response = await API.fetchTransactions(userId);
-      if (response.statusCode === 200 && response.statusMessage === "OK" && response.response.transactions.length > 0) {
+      if (response.statusCode === 200 && response.statusMessage === "OK") {
         setErrorMessage("");
-        const transactions = filterTransactions(date, response.response.transactions);
-        if (transactions.length > 0) {
-          setTransaction(transactions)
-          updateResumes(transactions, setResumes)
+        if (Object.entries(response.response).length > 0 && response.response.transactions.length > 0) {
+          const transactions = filterTransactions(date, response.response.transactions);
+          if (transactions.length > 0) {
+            setTransaction(transactions)
+            updateResumes(transactions, setResumes)
+          }
+          else
+            setErrorMessage("Não existe transações para esse mes");
         }
         else
           setErrorMessage("Não existe transações para esse mes");
@@ -307,7 +352,7 @@ export function GetTransactionByUserButton({ date, userId, setTransaction, setRe
 
   }
 
-  return (<><button onClick={fetchUserTransactions}>Pesquisar</button></>)
+  return (<><button class="secundaryButtons" onClick={fetchUserTransactions}>Pesquisar</button></>)
 
 }
 
@@ -331,22 +376,41 @@ function getCurrentDate() {
 
 export function DeleteTotalButton({ userId, data, info, setInfo, setErrorMessage }) {
 
+
+  const [confirm, setConfirm] = useState(false);
+
+  function changeButton() {
+    setConfirm(true);
+  }
   const deleteTotal = async () => {
 
     const response = await API.deleteTotal(userId, data.name, data.date, data.value);
     if (response.statusCode === 200 && response.statusMessage === "Total deleted with success") {
       setErrorMessage("");
       deleteValue(data, info, setInfo)
+      setConfirm(false);
     } else {
       setErrorMessage(`Erro generico: ${response.statusMessage}`);
     }
 
   }
-  return (<><button onClick={deleteTotal}>Apagar</button></>)
+  return (<>
+    {
+      confirm ?
+        <button class="secundaryButtons" onClick={deleteTotal}>confirmar</button> :
+        <button class="secundaryButtons" onClick={changeButton}>apagar</button>
+
+    }</>)
 
 }
 
 export function DeleteTypeButton({ userId, data, info, setInfo, setErrorMessage }) {
+
+  const [confirm, setConfirm] = useState(false);
+
+  function changeButton() {
+    setConfirm(true);
+  }
 
   const deleteType = async () => {
 
@@ -354,17 +418,30 @@ export function DeleteTypeButton({ userId, data, info, setInfo, setErrorMessage 
     if (response.statusCode === 200 && response.statusMessage === "Type deleted with success") {
       setErrorMessage("");
       deleteValue(data, info, setInfo)
+      setConfirm(false);
     } else {
       setErrorMessage(`Erro generico: ${response.statusMessage}`);
     }
 
   }
-  return (<><button onClick={deleteType}>Apagar</button></>)
+  return (<>
+    {
+      confirm ?
+        <button class="secundaryButtons" onClick={deleteType}>confirmar</button> :
+        <button class="secundaryButtons" onClick={changeButton}>apagar</button>
+
+    }</>)
 
 }
 
 
 export function DeleteTransactionButton({ userId, data, info, setInfo, setErrorMessage }) {
+
+  const [confirm, setConfirm] = useState(false);
+
+  function changeButton() {
+    setConfirm(true);
+  }
 
   const deleteTransaction = async () => {
 
@@ -372,12 +449,19 @@ export function DeleteTransactionButton({ userId, data, info, setInfo, setErrorM
     if (response.statusCode === 200 && response.statusMessage === "Transaction deleted with success") {
       setErrorMessage("");
       deleteValue(data, info, setInfo)
+      setConfirm(false);
     } else {
       setErrorMessage(`Erro generico: ${response.statusMessage}`);
     }
 
   }
-  return (<><button onClick={deleteTransaction}>Apagar</button></>)
+  return (<>
+    {
+      confirm ?
+        <button class="secundaryButtons" onClick={deleteTransaction}>confirmar</button> :
+        <button class="secundaryButtons" onClick={changeButton}>apagar</button>
+
+    }</>)
 
 }
 
@@ -412,4 +496,37 @@ function updateResumes(transactions, setResumes) {
 
   setResumes(groupedTransactions);
   return;
+}
+
+
+export function EditButton({setEditMode}){
+  function handleClick(){
+    setEditMode(true);
+  }
+  return(<><button class="secundaryButtons" onClick={handleClick}>editar</button></>)
+}
+
+export function EditTotalButton({setEditMode}){
+   const handleClick = async () => {
+ /*   const response = await API.updateTotals(newTotal.userId, oldTotal[0].name, newTotal.name, oldTotal[0].date, newTotal.date, oldTotal[0].value, newValue.toFixed(2))
+
+  if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
+
+    const newTotals = [...filteredInfo, newTotal];
+
+    setTotals(newTotals.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    }))
+      
+    setEditMode(false);
+  } else
+    setErrorMessage(response.statusMessage)*/
+  }
+  return(<><button class="secundaryButtons" onClick={handleClick}>guardar alterações</button></>)
+}
+
+export function EditTypeButton({setEditMode}){
+   const handleClick = async () => {
+   }
+  return(<><button class="secundaryButtons" onClick={handleClick}>guardar alterações</button></>)
 }

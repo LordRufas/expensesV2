@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { LogoutButton, MainPageButton, Title, GetTransactionByUserButton, ErrorMessage } from "./Button";
-import {  TransactionTable , ResumeTable} from "./Table";
+import { TransactionTable, ResumeTable } from "./Table";
 
 export function HistoryPage({ username, setPage, userId }) {
   const [month, setMonth] = useState('');
@@ -11,13 +11,24 @@ export function HistoryPage({ username, setPage, userId }) {
 
   const [errorMessage, setErrorMessage] = useState('');
 
-  return (<><Title username={username}></Title>
-    <input type="month" onChange={(e) => setMonth(e.target.value)} />
-    <MainPageButton setPage={setPage}></MainPageButton>
-    <LogoutButton setPage={setPage}></LogoutButton>
+  return (<>
+    <Title username={username}></Title>
+    <div class="headerButtons">
+      <MainPageButton setPage={setPage}></MainPageButton>
+      <LogoutButton setPage={setPage}></LogoutButton>
+    </div>
+    <div class="child">
 
-    <ResumeTable info={resumes} setInfo={setResumes} ></ResumeTable>
-    <TransactionTable info={transactions} editMode={false}></TransactionTable>
-    <GetTransactionByUserButton userId={userId} date={month} setTransaction={setTransactions} setResumes={setResumes} setErrorMessage={setErrorMessage}></GetTransactionByUserButton>
-    <ErrorMessage errorMessage={errorMessage}></ErrorMessage></>);
+      <input class="calendar" type="month" onChange={(e) => setMonth(e.target.value)} />
+      <GetTransactionByUserButton userId={userId} date={month} setTransaction={setTransactions} setResumes={setResumes} setErrorMessage={setErrorMessage}></GetTransactionByUserButton>
+      <ErrorMessage errorMessage={errorMessage}></ErrorMessage>
+    </div>
+    <div class="small-containerHistory">
+     <div class ="table-container">
+      <TransactionTable info={transactions} editMode={false}></TransactionTable>
+      </div>
+      <div class="child">
+      <ResumeTable info={resumes} setInfo={setResumes} ></ResumeTable>
+      </div>
+    </div></>);
 }

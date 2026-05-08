@@ -144,6 +144,11 @@ public class Totals {
         core.purge(TOTALS.getId());
     }
 
+    public BaseResponse purgeTotalsOut(){
+        core.purge(TOTALS.getId());
+        return new BaseResponse( "OK",200);
+    }
+
 
     private String searchData(String userId, String total, String date, double value){
         List<String> elements = new ArrayList<>();

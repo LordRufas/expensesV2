@@ -132,6 +132,17 @@ public class Controller {
     }
 
 
+    @PostMapping("/purgeTotals")
+    public BaseResponse purgeTotals() {
+        return total.purgeTotalsOut();
+    }
+
+
+    @PostMapping("/purgeTypes")
+    public BaseResponse purgeTypes() {
+        return type.purgeTotalsOut();
+    }
+
 
 
 }

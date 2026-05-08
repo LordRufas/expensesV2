@@ -1,5 +1,6 @@
 import * as Buttons from "./Button";
 import * as API from "./Api"
+import { useState } from "react";
 
 export function ResumeTable({ info, setInfo }) {
   return (
@@ -28,6 +29,7 @@ export function ResumeTable({ info, setInfo }) {
 }
 
 export function TotalTable({ info, setInfo, userId, setErrorMessage }) {
+  const [editMode, setEditMode] = useState(false);
   return (
     <table border="1">
       <thead>
@@ -39,15 +41,25 @@ export function TotalTable({ info, setInfo, userId, setErrorMessage }) {
       </thead>{
         info &&
         <tbody>
-          {
+          {editMode ?
             info.map((data) => (<>
               <tr>
-                <td><input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeTotal(e.target.value, data, "name", info, setInfo, userId)} /></td>
-                <td><input type="number" value={data.value} placeholder={data.value} onChange={(e) => changeTotal(e.target.value, data, "value", info, setInfo, userId)} /></td>
-                <td><Buttons.DeleteTotalButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTotalButton></td>
+                <td><input class="calendar" type="text" value={data.name} placeholder={data.name} onChange={(e) => updateTotalName(e.target.value, data, setInfo, info)} /></td>
+                <td><input class="calendar" type="number" value={data.value} placeholder={data.value} onChange={(e) => updateTotalValue(e.target.value, data, setInfo, info)} /></td>
+                <td>
+                  <div class="child">
+                    <Buttons.EditTotalButton setEditMode={setEditMode}></Buttons.EditTotalButton>
+                    <Buttons.DeleteTotalButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTotalButton>
+                  </div>
+                </td>
               </tr>
-
-
+            </>)) :
+            info.map((data) => (<>
+              <tr>
+                <td>{data.name}</td>
+                <td>{data.value}</td>
+                <td><Buttons.EditButton setEditMode={setEditMode}></Buttons.EditButton ></td>
+              </tr>
             </>))
           }
         </tbody>
@@ -68,7 +80,7 @@ export function TransactionTable({ info, userId, editMode, setInfo, setErrorMess
           {editMode && <th> total </th>}
 
           <th> valor </th>
-          <th></th>
+          {editMode && <th></th>}
         </tr>
       </thead>
       {
@@ -79,9 +91,9 @@ export function TransactionTable({ info, userId, editMode, setInfo, setErrorMess
               <tr>
                 <td> {data.date} </td>
                 <td>{data.typeName} </td>
-                <td>{data.total} </td>
+                {editMode && <td>{data.total} </td>}
                 <td>{data.value} </td>
-                <td>{editMode && <Buttons.DeleteTransactionButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton >}</td>
+                {editMode && <td><Buttons.DeleteTransactionButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton ></td>}
               </tr>
             </>))
           }
@@ -92,23 +104,39 @@ export function TransactionTable({ info, userId, editMode, setInfo, setErrorMess
 }
 
 export function TypesTable({ info, setInfo, userId, setErrorMessage }) {
+  const [editMode, setEditMode] = useState(false);
   return (
     <table border="1">
       <thead>
-        <tr>
+        <th>
           Nome
-        </tr>
+        </th>
+        <th></th>
       </thead>
       {
         info &&
+
         <tbody>
           {
-            info.map((data) => (<>
-              <tr>
-                <td> <input type="text" value={data.name} placeholder={data.name} onChange={(e) => changeType(e.target.value, data.name, info, setInfo, userId)} /></td>
-                <td><Buttons.DeleteTypeButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTypeButton ></td>
-              </tr>
-            </>))
+            editMode ?
+              info.map((data) => (<>
+                <tr>
+                  <td> <input class="calendar" type="text" value={data.name} placeholder={data.name} onChange={(e) => updateTypes(e.target.value, data, setInfo, info)} /></td>
+                  <td>
+                    <div class="child">
+                      <Buttons.EditTotalButton setEditMode={setEditMode}></Buttons.EditTotalButton>
+                      <Buttons.DeleteTypeButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}></Buttons.DeleteTypeButton >
+                    </div>
+                  </td>
+                </tr>
+              </>))
+              :
+              info.map((data) => (<>
+                <tr>
+                  <td>{data.name}</td>
+                  <td><Buttons.EditButton setEditMode={setEditMode}></Buttons.EditButton ></td>
+                </tr>
+              </>))
           }
         </tbody>
       }
@@ -117,87 +145,46 @@ export function TypesTable({ info, setInfo, userId, setErrorMessage }) {
 }
 
 
-export function changeType(newValue, oldValue, types, setTypes, userId) {
 
-  const filteredInfo = types.filter(item => item.name !== oldValue);
-  const newType = {
-    userId: userId,
-    name: newValue
-  };
+function updateTypes(newValue, data, setInfo, info) {
+  const newInfo = info.map((item) => {
+    if (item === data) {
+      return {
+        ...item,
+        name: newValue
+      };
+    }
+    return item;
+  });
 
-  const newTypes = [...filteredInfo, newType];
-
-
-  setTypes(newTypes.sort((a, b) => {
-    return a.name.localeCompare(b.name);
-  }));
-
-}
-
-export async function changeTotal(newValue, oldValue, property, totals, setTotals, userId) {
-
-  const filteredInfo = totals.filter(item => item.name !== oldValue.name);
-  let newTotal = [];
-
-  if (property === "name")
-    newTotal = {
-      date: oldValue.date,
-      name: newValue,
-      userId: userId,
-      value: oldValue.value
-
-    };
-  else
-    newTotal = {
-      date: oldValue.date,
-      name: oldValue.name,
-      userId: userId,
-      value: newValue
-
-    };
-
-
-
-
-  const response = await API.updateTotals(newTotal.userId, oldValue.name, newTotal.name, oldValue.date, newTotal.date, Number(oldValue.value), Number(newTotal.value).toFixed(2))
-  if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
-    const newTotals = [...filteredInfo, newTotal];
-    setTotals(newTotals.sort((a, b) => {
-      return a.name.localeCompare(b.name);
-    }))
-
-  }
+  setInfo(newInfo)
 
 }
 
-export async function updateTotal(addValue, oldValue, totals, setTotals, isRevenue, setErrorMessage) {
+function updateTotalName(newValue, data, setInfo, info) {
+  const newInfo = info.map((item) => {
+    if (item === data) {
+      return {
+        ...item,
+        name: newValue
+      };
+    }
+    return item;
+  });
 
-  const oldTotal = totals.filter(item => item.name === oldValue);
+  setInfo(newInfo)
+}
 
-  const filteredInfo = totals.filter(item => item.name !== oldValue);
-  let newTotal = [];
-  let newValue = isRevenue
-    ? Number(oldTotal[0].value) + Number(addValue)
-    : Number(oldTotal[0].value) - Number(addValue);
+function updateTotalValue(newValue, data, setInfo, info) {
+  const newInfo = info.map((item) => {
+    if (item === data) {
+      return {
+        ...item,
+        value: newValue
+      };
+    }
+    return item;
+  });
 
-
-
-  newTotal = {
-    date: oldTotal[0].date,
-    name: oldTotal[0].name,
-    userId: oldTotal[0].userId,
-    value: newValue.toFixed(2)
-
-  };
-  const response = await API.updateTotals(newTotal.userId, oldTotal[0].name, newTotal.name, oldTotal[0].date, newTotal.date, oldTotal[0].value, newValue.toFixed(2))
-
-  if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
-
-    const newTotals = [...filteredInfo, newTotal];
-
-    setTotals(newTotals.sort((a, b) => {
-      return a.name.localeCompare(b.name);
-    }))
-  } else
-    setErrorMessage(response.statusMessage)
+  setInfo(newInfo)
 }

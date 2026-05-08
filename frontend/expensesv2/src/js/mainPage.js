@@ -33,15 +33,18 @@ export function MainPage({ username, setPage, userId }) {
     <>
       <Buttons.Title username={username} />
 
-      <div>
+      <div class="headerButtons">
         <Buttons.HistoryButton setPage={setPage} />
         <Buttons.LogoutButton setPage={setPage} />
       </div>
 
       <div>
-        <TotalDiv userId={userId} totals={totals} setTotals={setTotals} />
+
         <TransactionDiv userId={userId} totals={totals} setTotals={setTotals} types={types} transactions={transactions} setTransactions={setTransactions} />
-        <TypeDiv userId={userId} types={types} setTypes={setTypes} />
+        <div class="small-containerMain">
+          <TotalDiv userId={userId} totals={totals} setTotals={setTotals} />
+          <TypeDiv userId={userId} types={types} setTypes={setTypes} />
+        </div>
       </div>
     </>
   );
@@ -55,20 +58,31 @@ function TransactionDiv({ userId, totals, setTotals, types, transactions, setTra
   const [type, setType] = useState('');
   const [isRevenue, setIsRevenue] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  return (<>    <h2>Transações</h2>
-    <Tables.TransactionTable info={transactions} editMode={true} userId={userId} setInfo={setTransactions} setErrorMessage={setErrorMessage}></Tables.TransactionTable>
+  return (<>
+    <div class="small-container">
+      <h2>Transações</h2>
+      <div class="table-container">
+        <Tables.TransactionTable info={transactions} editMode={true} userId={userId} setInfo={setTransactions} setErrorMessage={setErrorMessage}></Tables.TransactionTable>
+      </div>
+      <div class="child">
+        <input class="calendar" type="month" onChange={(e) => setDate(e.target.value)} />
+        <input class="calendar" placeholder="valor" type="number" onChange={(e) => setValue(e.target.value)} ></input>
+        <Buttons.Combobox info={types} value={type} setValue={setType} placeholder={"Tipo de transferencia"}></Buttons.Combobox>
+        <Buttons.Combobox info={totals} value={total} setValue={setTotal} placeholder={"Total"}></Buttons.Combobox>
+        <label class="custom-checkbox">
+          <input type="checkbox" onChange={(e) => setIsRevenue(e.target.checked)}></input>
+          <span class="checkmark"></span>
+        </label>
 
-    <input type="month" onChange={(e) => setDate(e.target.value)} />
-    <input placeholder="valor" type="number" onChange={(e) => setValue(e.target.value)} ></input>
-    <Buttons.Combobox info={types} value={type} setValue={setType} placeholder={"Tipo de transferencia"}></Buttons.Combobox>
-    <Buttons.Combobox info={totals} value={total} setValue={setTotal} placeholder={"Total"}></Buttons.Combobox>
-    <input type="checkbox" onChange={(e) => setIsRevenue(e.target.checked)}></input>
-    <Buttons.AddTransactionButton userId={userId} setTransactions={setTransactions} date={date}
-      total={total} value={value} type={type} isRevenue={isRevenue} setErrorMessage={setErrorMessage}
-      transactions={transactions} setTransaction={setTransactions}
-      totals={totals} setTotals={setTotals}>Adicionar</Buttons.AddTransactionButton>
-    <Buttons.ErrorMessage errorMessage={errorMessage}></Buttons.ErrorMessage>
+
+        <Buttons.AddTransactionButton userId={userId} setTransactions={setTransactions} date={date}
+          total={total} value={value} type={type} isRevenue={isRevenue} setErrorMessage={setErrorMessage}
+          transactions={transactions} setTransaction={setTransactions}
+          totals={totals} setTotals={setTotals}>Adicionar</Buttons.AddTransactionButton>
+        <Buttons.ErrorMessage errorMessage={errorMessage}></Buttons.ErrorMessage>
+      </div></div>
   </>)
+
 }
 
 function TotalDiv({ userId, totals, setTotals }) {
@@ -77,13 +91,21 @@ function TotalDiv({ userId, totals, setTotals }) {
   const [value, setValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   return (<>
-    <h2>Totais atuais</h2>
-    <Tables.TotalTable info={totals} setInfo={setTotals} userId={userId} setErrorMessage={setErrorMessage}></Tables.TotalTable>
-    <input placeholder="nome" onChange={(e) => setName(e.target.value)}></input>
-    <input placeholder="valor" type="number" onChange={(e) => setValue(e.target.value)}></input>
-    <Buttons.AddTotalButton userId={userId} date={currentDate}
-      name={name} totals={totals} setTotals={setTotals} value={value} setErrorMessage={setErrorMessage}>Adicionar</Buttons.AddTotalButton>
-    <Buttons.ErrorMessage errorMessage={errorMessage}></Buttons.ErrorMessage>
+    <div class="small-container">
+      <div>
+        <h2>Totais atuais</h2>
+        <div class="table-container">
+          <Tables.TotalTable info={totals} setInfo={setTotals} userId={userId} setErrorMessage={setErrorMessage}></Tables.TotalTable>
+        </div>
+      </div>
+      <div class="child">
+        <input class="calendar" placeholder="nome" onChange={(e) => setName(e.target.value)}></input>
+        <input class="calendar" placeholder="valor" type="number" onChange={(e) => setValue(e.target.value)}></input>
+        <Buttons.AddTotalButton userId={userId} date={currentDate}
+          name={name} totals={totals} setTotals={setTotals} value={value} setErrorMessage={setErrorMessage}>Adicionar</Buttons.AddTotalButton>
+        <Buttons.ErrorMessage errorMessage={errorMessage}></Buttons.ErrorMessage>
+      </div>
+    </div>
   </>)
 }
 
@@ -93,12 +115,18 @@ function TypeDiv({ userId, types, setTypes }) {
   const [name, setName] = useState('');
 
   return (<>
-    <h2>Tipos</h2>
-    <Tables.TypesTable info={types} setInfo={setTypes} userId={userId} setErrorMessage={setErrorMessage}></Tables.TypesTable>
-    <input placeholder="nome" onChange={(e) => setName(e.target.value)}></input>
-    <Buttons.AddTypeButton userId={userId} name={name}
-      setErrorMessage={setErrorMessage} types={types} setTypes={setTypes}>Adicionar</Buttons.AddTypeButton>
-    <Buttons.ErrorMessage errorMessage={errorMessage} ></Buttons.ErrorMessage> </>)
+    <div class="small-container">
+      <div >
+        <h2>Tipos</h2>
+        <div class="table-container">
+          <Tables.TypesTable info={types} setInfo={setTypes} userId={userId} setErrorMessage={setErrorMessage}></Tables.TypesTable>
+        </div>
+      </div>
+      <div class="child"><input class="calendar" placeholder="nome" onChange={(e) => setName(e.target.value)}></input>
+        <Buttons.AddTypeButton userId={userId} name={name}
+          setErrorMessage={setErrorMessage} types={types} setTypes={setTypes}>Adicionar</Buttons.AddTypeButton>
+        <Buttons.ErrorMessage errorMessage={errorMessage} ></Buttons.ErrorMessage>
+      </div> </div></>)
 }
 
 

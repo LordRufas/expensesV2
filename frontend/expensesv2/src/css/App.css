@@ -1,9 +1,306 @@
-/* VARS
- :root {
-     --primary-button-color: #5E5DF0;
+:root {
+    --primary-button-color: #5E5DF0;
 }
- body{
-     background-image: url('../img/main_page_background.jpg');
-     background-size: cover;
+
+
+
+
+
+h1 {
+    color: var(--primary-button-color);
+    font-size: 50px;
 }
-*/
+
+h2 {
+    color: var(--primary-button-color);
+    font-size: 25px;
+}
+
+button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    border-radius: 6px;
+    border: none;
+
+    color: #fff;
+    background: linear-gradient(180deg, #4B91F7 0%, #367AF6 100%);
+    background-origin: border-box;
+    box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.button:focus {
+    box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+    outline: 0;
+}
+
+
+table {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #f8f9fa;
+}
+
+td,
+th {
+    text-align: center;
+    /* Horizontal */
+    vertical-align: middle;
+    /* Vertical */
+    border: 1px solid #ddd;
+    padding: 8px;
+
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: var(--primary-button-color);
+    color: white;
+}
+
+.calendar {
+    background-color: #f0f4f8;
+    border: 2px solid #3b82f6;
+    border-radius: 8px;
+    padding: 10px;
+    color: #1e293b;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    outline: none;
+}
+
+.calendar:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.inputGroup {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 1em 0 1em 0;
+    max-width: 190px;
+    position: relative;
+}
+
+.inputGroup input {
+    font-size: 100%;
+    padding: 0.8em;
+    outline: none;
+    border: 2px solid rgb(200, 200, 200);
+    background-color: transparent;
+    border-radius: 20px;
+    width: 100%;
+}
+
+.inputGroup label {
+    font-size: 100%;
+    position: absolute;
+    left: 0;
+    padding: 0.8em;
+    margin-left: 0.5em;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    color: rgb(100, 100, 100);
+}
+
+.inputGroup :is(input:focus, input:valid)~label {
+    transform: translateY(-50%) scale(.9);
+    margin: 0em;
+    margin-left: 1.3em;
+    padding: 0.4em;
+    background-color: #e8e8e8;
+}
+
+.inputGroup :is(input:focus, input:valid) {
+    border-color: rgb(150, 150, 200);
+}
+
+.table_input {
+    background: transparent;
+    border: none;
+    outline: none;
+    /* Removes the default blue/black ring on click */
+    color: inherit;
+    /* Takes the text color from the parent */
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+
+
+.container {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.parent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Centers horizontally */
+    align-items: center;
+    /* Centers vertically */
+    min-height: 100vh;
+    /* Makes the container the full height of the viewport */
+    transform: scale(1);
+}
+
+.child {
+    top: 3px;
+    position: relative;
+    display: flex;
+    gap: 10px;
+}
+
+
+
+.headerButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    line-height: normal;
+
+}
+
+.secundaryButtons{
+ display: flex;
+  justify-content: center; /* Horizontal */
+  align-items: center;     /* Vertical */
+}
+
+.buttonClass {
+    appearance: none;
+    background-color: #FFFFFF;
+    border-radius: 40em;
+    border-style: none;
+    box-shadow: #ADCFFF 0 -12px 6px inset;
+    box-sizing: border-box;
+    color: #000000;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system, sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -.24px;
+    margin: 0;
+    outline: none;
+    padding: 1rem 1.3rem;
+    quotes: auto;
+    text-align: center;
+    text-decoration: none;
+    transition: all .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.buttonClass:hover {
+    background-image: linear-gradient(#0dccea, #0d70ea);
+    box-shadow: rgba(0, 0, 0, .3) 0 5px 15px;
+    transform: scale(1.125);
+}
+
+.buttonClass:active {
+    transform: scale(1.025);
+}
+
+.loginInput {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: 0.3s;
+}
+
+/* 1. Hide the default checkbox */
+.custom-checkbox input {
+    display: none;
+}
+
+/* 2. Create the box */
+.checkmark {
+    height: 25px;
+    width: 25px;
+    border: 2px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+
+.checkmark::after {
+    content: "−";
+    color: #ef4444;
+    font-size: 20px;
+}
+
+.custom-checkbox input:checked+.checkmark {
+    border-color: #22c55e;
+}
+
+.custom-checkbox input:checked+.checkmark::after {
+    content: "+";
+    color: #22c55e;
+
+}
+
+.table-container {
+  max-height: 200px;  /* Set your limit here */
+  overflow-y: auto;   /* Adds vertical scrollbar only when needed */
+  border: 1px solid #ddd;
+  width: 100%;
+}
+
+th {
+  position: sticky;
+  top: 0;             /* Sticks to the top of the container */
+  z-index: 10;        /* Keeps it above the scrolling rows */
+  
+}
+
+.small-container {
+  transform: scale(0.7);
+  transform-origin: center;
+}
+
+.small-containerHistory {
+  transform: scale(0.9);
+  transform-origin: center;
+   display: flex;
+  gap: 20px;
+}
+
+.small-containerMain {
+  transform: scale(0.9);
+}
