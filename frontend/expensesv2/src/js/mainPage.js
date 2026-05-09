@@ -1,14 +1,12 @@
 import * as Tables from "./Table";
 import * as Buttons from "./Button";
 import "../css/App.css"
-import { use, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { fetchTypes, fetchTotals } from "./Api";
-import userEvent from "@testing-library/user-event";
 
 export function MainPage({ username, setPage, userId }) {
   const [totals, setTotals] = useState([]);
   const [types, setTypes] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
   const [transactions, setTransactions] = useState([]);
 
 

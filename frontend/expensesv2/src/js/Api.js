@@ -365,3 +365,49 @@ export async function deleteTransaction(userId, date, typeName, value, isRevenue
     return error;
   }
 }
+
+export async function purgeTypes(userId) {
+   try {
+    const url = `${baseUrl}/purgeTypes?userId=${userId}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      return "error";
+    }
+  } catch (error) {
+    return error;
+  }
+}
+
+export async function purgeTotals(userId) {
+  try {
+    const url = `${baseUrl}/purgeTotals?userId=${userId}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      return "error";
+    }
+  } catch (error) {
+    return error;
+  }
+}

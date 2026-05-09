@@ -133,14 +133,14 @@ public class Controller {
 
 
     @PostMapping("/purgeTotals")
-    public BaseResponse purgeTotals() {
-        return total.purgeTotalsOut();
+    public BaseResponse purgeTotals(@RequestParam String userId) {
+        return total.purgeTotalsByUserId(userId);
     }
 
 
     @PostMapping("/purgeTypes")
-    public BaseResponse purgeTypes() {
-        return type.purgeTotalsOut();
+    public BaseResponse purgeTypes(@RequestParam String userId) {
+        return type.purgeTypesByUserId(userId);
     }
 
 

@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import { LoginButton, NewUserButton, ErrorMessage } from "./Button"
-import '../css/style.css';
 
 function LoginInfo({ page, setPage, setUsername, setPassword }) {
   return (<>

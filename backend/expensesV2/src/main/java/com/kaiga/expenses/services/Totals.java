@@ -27,17 +27,16 @@ public class Totals {
     private static final String ID = "id";
 
 
-
-    public Totals(Core core){
+    public Totals(Core core) {
         this.core = core;
     }
 
-    public BaseResponse addTotal(int userId, String date, String name, double value){
-        String preChecks = searchData(String.valueOf(userId), name, date,0.0);
+    public BaseResponse addTotal(int userId, String date, String name, double value) {
+        String preChecks = searchData(String.valueOf(userId), name, date, 0.0);
 
-        if(preChecks.equals(USER_NOT_FOUND))
+        if (preChecks.equals(USER_NOT_FOUND))
             return new BaseResponse(USER_NOT_FOUND, 404);
-        if(preChecks.equals(TOTAL_ALREADY_EXISTS))
+        if (preChecks.equals(TOTAL_ALREADY_EXISTS))
             return new BaseResponse(TOTAL_ALREADY_EXISTS, 200);
 
         List<Object> values = new ArrayList<>();
@@ -46,9 +45,9 @@ public class Totals {
         values.add(name);
         values.add(value);
 
-        String response =  core.add(TOTALS.getId(), values);
+        String response = core.add(TOTALS.getId(), values);
 
-        if(response.equals(SUCCESS))
+        if (response.equals(SUCCESS))
             return new BaseResponse(TOTAL_ADDED, 200);
         else
             return new BaseResponse(ERROR_MESSAGE + response, 400);
@@ -56,111 +55,134 @@ public class Totals {
 
     }
 
-    public BaseResponse getTotal(int userId){
-        if(searchData(String.valueOf(userId), null, null,0.0).equals(USER_NOT_FOUND))
+    public BaseResponse getTotal(int userId) {
+        if (searchData(String.valueOf(userId), null, null, 0.0).equals(USER_NOT_FOUND))
             return new BaseResponse(USER_NOT_FOUND, 404);
 
         Map<String, Object> response = new LinkedHashMap<>();
 
         List<Map<String, String>> totals = new ArrayList<>();
 
-        ExcelSheet sheet =  core.read(TOTALS.getId());
+        ExcelSheet sheet = core.read(TOTALS.getId());
 
-        for(ExcelRow row : sheet.getExcelRows()){
-            if(row.getData().get(0).equals(String.valueOf(userId))){
+        for (ExcelRow row : sheet.getExcelRows()) {
+            if (row.getData().get(0).equals(String.valueOf(userId))) {
                 Map<String, String> info = new HashMap<>();
                 info.put(USERID, row.getData().get(0));
-                info.put(DATE,row.getData().get(1));
-                info.put(NAME,row.getData().get(2));
-                info.put(VALUE,row.getData().get(3));
+                info.put(DATE, row.getData().get(1));
+                info.put(NAME, row.getData().get(2));
+                info.put(VALUE, row.getData().get(3));
                 totals.add(info);
             }
 
         }
 
-        if(!totals.isEmpty())
+        if (!totals.isEmpty())
             response.put("totals", totals);
 
-        return new BaseResponse("OK", 200,  response);
+        return new BaseResponse("OK", 200, response);
 
     }
 
     public BaseResponse getAllTotals() {
-        Map<String, Object> response =  core.read(TOTALS.getId()).sheetData();
-        return new BaseResponse("OK", 200,  response);
+        Map<String, Object> response = core.read(TOTALS.getId()).sheetData();
+        return new BaseResponse("OK", 200, response);
     }
 
     public BaseResponse updateTotal(int userId, String oldDate, String oldName, double oldValue,
-                                    String newDate, String newName, double newValue){
-        if(searchData(String.valueOf(userId), null, null, 0.0).equals(USER_NOT_FOUND))
+                                    String newDate, String newName, double newValue) {
+        if (searchData(String.valueOf(userId), null, null, 0.0).equals(USER_NOT_FOUND))
             return new BaseResponse(USER_NOT_FOUND, 404);
-        if(searchData(String.valueOf(userId), oldName, oldDate, oldValue).equals(TOTAL_NOT_FOUND))
+        if (searchData(String.valueOf(userId), oldName, oldDate, oldValue).equals(TOTAL_NOT_FOUND))
             return new BaseResponse(TOTAL_NOT_FOUND, 200);
-        if(!Objects.equals(oldName, newName) && searchData(String.valueOf(userId), newName, newDate, newValue).equals(TOTAL_ALREADY_EXISTS))
+        if (!Objects.equals(oldName, newName) && searchData(String.valueOf(userId), newName, newDate, newValue).equals(TOTAL_ALREADY_EXISTS))
             return new BaseResponse(TOTAL_ALREADY_EXISTS, 200);
 
         List<Object> oldParams = new ArrayList<>();
-        oldParams.add(String.valueOf( userId));
+        oldParams.add(String.valueOf(userId));
         oldParams.add(oldDate);
         oldParams.add(oldName);
         oldParams.add(oldValue);
 
         List<Object> newParams = new ArrayList<>();
-        newParams.add(String.valueOf( userId));
+        newParams.add(String.valueOf(userId));
         newParams.add(newDate);
         newParams.add(newName);
         newParams.add(newValue);
 
         String response = core.update(TOTALS.getId(), oldParams, newParams);
 
-        if(response.equals(SUCCESS))
+        if (response.equals(SUCCESS))
             return new BaseResponse(TOTAL_UPDATED, 200);
         else
             return new BaseResponse(ERROR_MESSAGE + response, 400);
     }
 
-    public BaseResponse deleteTotal(int userId,  String date,String name, double value){
-        if(searchData(String.valueOf(userId), null, null,0.0).equals(USER_NOT_FOUND))
+    public BaseResponse deleteTotal(int userId, String date, String name, double value) {
+        if (searchData(String.valueOf(userId), null, null, 0.0).equals(USER_NOT_FOUND))
             return new BaseResponse(USER_NOT_FOUND, 404);
-        if(searchData(String.valueOf(userId), name, date,0.0).equals(TOTAL_NOT_FOUND))
+        if (searchData(String.valueOf(userId), name, date, 0.0).equals(TOTAL_NOT_FOUND))
             return new BaseResponse(TOTAL_NOT_FOUND, 404);
 
         List<Object> params = new ArrayList<>();
-        params.add(String.valueOf( userId));
+        params.add(String.valueOf(userId));
         params.add(date);
         params.add(name);
-        params.add(String.valueOf( value));
+        params.add(String.valueOf(value));
 
         String response = core.delete(TOTALS.getId(), params);
 
-        if(response.equals(SUCCESS))
+        if (response.equals(SUCCESS))
             return new BaseResponse(TOTAL_DELETED, 200);
         else
             return new BaseResponse(ERROR_MESSAGE + response, 400);
 
     }
 
-    public void purgeTotals(){
+    public void purgeTotals() {
         core.purge(TOTALS.getId());
     }
 
-    public BaseResponse purgeTotalsOut(){
-        core.purge(TOTALS.getId());
-        return new BaseResponse( "OK",200);
+    public BaseResponse purgeTotalsByUserId(String userId) {
+        ExcelSheet sheet = core.read(TOTALS.getId());
+        int success = 0;
+        int failed = 0;
+        int notApplied = 0;
+        for (ExcelRow row : sheet.getExcelRows()) {
+            if (row.getData().get(0).equals(userId)) {
+                List<Object> params = new ArrayList<>();
+                params.add(userId);
+                params.add(row.getData().get(1));
+                params.add(row.getData().get(2));
+                params.add(row.getData().get(3));
+                String response = core.delete(TOTALS.getId(), params);
+                if (response.equals(SUCCESS))
+                    success++;
+                else
+                    failed++;
+            } else
+                notApplied++;
+        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("Success", success);
+        response.put("Failed",  failed);
+        response.put("Not_Applied",  notApplied);
+
+        return new BaseResponse("OK", 200, response);
     }
 
 
-    private String searchData(String userId, String total, String date, double value){
+    private String searchData(String userId, String total, String date, double value) {
         List<String> elements = new ArrayList<>();
         List<String> headerNames = new ArrayList<>();
 
-        if(userId != null) {
+        if (userId != null) {
             headerNames.add(ID);
             elements.add(userId);
-            if (!core.rowExists(USERS.getId(), elements,headerNames))
+            if (!core.rowExists(USERS.getId(), elements, headerNames))
                 return USER_NOT_FOUND;
         }
-        if(total != null && date != null && value > 0.0) {
+        if (total != null && date != null && value > 0.0) {
             headerNames.clear();
             elements.clear();
 
@@ -172,11 +194,11 @@ public class Totals {
             elements.add(date);
             elements.add(total);
             elements.add(String.valueOf(value));
-            if (core.rowExists(TOTALS.getId(), elements,headerNames))
+            if (core.rowExists(TOTALS.getId(), elements, headerNames))
                 return TOTAL_ALREADY_EXISTS;
             else
                 return TOTAL_NOT_FOUND;
-        }else  if(total != null && date != null) {
+        } else if (total != null && date != null) {
             headerNames.clear();
             elements.clear();
 
@@ -186,7 +208,7 @@ public class Totals {
             elements.add(userId);
             elements.add(date);
             elements.add(total);
-            if (core.rowExists(TOTALS.getId(), elements,headerNames))
+            if (core.rowExists(TOTALS.getId(), elements, headerNames))
                 return TOTAL_ALREADY_EXISTS;
             else
                 return TOTAL_NOT_FOUND;

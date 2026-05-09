@@ -47,7 +47,7 @@ export function NewUserButton({ setPage }) {
     setPage('newUser')
   };
 
-  return <button  onClick={handleNewUser}>Novo utilizador</button>;
+  return <button onClick={handleNewUser}>Novo utilizador</button>;
 }
 
 
@@ -70,7 +70,7 @@ export function LoginButton({ setUsername, setPage, username, password, setPassw
       SetErrorMessage(`Erro generico: ${response.statusMessage}`);
   };
 
-  return <button  onClick={handleLogin}>Login</button>;
+  return <button onClick={handleLogin}>Login</button>;
 }
 
 
@@ -91,7 +91,7 @@ export function CreateUserButton({ setPage, password, username, SetErrorMessage 
     }
 
   }
-  return <button  onClick={handleCreateUser}>Criar</button>;
+  return <button onClick={handleCreateUser}>Criar</button>;
 }
 
 export function Combobox({ info, value, setValue, placeholder }) {
@@ -99,7 +99,7 @@ export function Combobox({ info, value, setValue, placeholder }) {
   return (<>
     {info !== undefined ?
       <select
-      class="calendar"
+        class="calendar"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         disabled={!info || info.length === 0}
@@ -150,8 +150,9 @@ export function AddTransactionButton({ userId, date, value, type, total, isReven
             total: total
           };
 
-          updateTotal(value, total, totals, setTotals, isRevenue, setErrorMessage);
-          setTransaction(prev => [...transactions, newTransaction]);
+          const response = await changeTotal(value, total, totals, setTotals, isRevenue,userId, setErrorMessage);
+          if(response === "ok")
+            setTransaction(prev => [...transactions, newTransaction]);
         } else {
           setErrorMessage(`Erro generico: ${response.statusMessage}`);
         }
@@ -163,56 +164,20 @@ export function AddTransactionButton({ userId, date, value, type, total, isReven
 
 
 
-export async function updateTotal(addValue, oldValue, totals, setTotals, isRevenue, setErrorMessage) {
-
-  const oldTotal = totals.filter(item => item.name === oldValue);
-
-  const filteredInfo = totals.filter(item => item.name !== oldValue);
-  let newTotal = [];
-  let newValue = isRevenue
-    ? Number(oldTotal[0].value) + Number(addValue)
-    : Number(oldTotal[0].value) - Number(addValue);
 
 
+export async function changeTotal(value, total, totals, setTotals,isRevenue, userId,setErrorMessage) {
 
-  newTotal = {
-    date: oldTotal[0].date,
-    name: oldTotal[0].name,
-    userId: oldTotal[0].userId,
-    value: newValue.toFixed(2)
-
-  };
-  const response = await API.updateTotals(newTotal.userId, oldTotal[0].name, newTotal.name, oldTotal[0].date, newTotal.date, oldTotal[0].value, newValue.toFixed(2))
-
-  if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
-
-    const newTotals = [...filteredInfo, newTotal];
-
-    setTotals(newTotals.sort((a, b) => {
-      return a.name.localeCompare(b.name);
-    }))
-  } else
-    setErrorMessage(response.statusMessage)
-}
-
-
-export async function changeTotal(newValue, oldValue, property, totals, setTotals, userId) {
-
-  const filteredInfo = totals.filter(item => item.name !== oldValue.name);
-  let newTotal = [];
-
-  if (property === "name")
-    newTotal = {
-      date: oldValue.date,
-      name: newValue,
-      userId: userId,
-      value: oldValue.value
-
-    };
+  const filteredInfo = totals.filter(item => item.name !== total);
+  const oldTotal = totals.filter(item => item.name === total);
+  let newValue =0;
+  if(isRevenue === true)
+    newValue = Number(oldTotal[0].value) + Number(value);
   else
-    newTotal = {
-      date: oldValue.date,
-      name: oldValue.name,
+     newValue = Number(oldTotal[0].value) - Number(value);
+  let newTotal =  {
+      date: oldTotal[0].date,
+      name: oldTotal[0].name,
       userId: userId,
       value: newValue
 
@@ -221,14 +186,16 @@ export async function changeTotal(newValue, oldValue, property, totals, setTotal
 
 
 
-  const response = await API.updateTotals(newTotal.userId, oldValue.name, newTotal.name, oldValue.date, newTotal.date, Number(oldValue.value), Number(newTotal.value).toFixed(2))
+  const response = await API.updateTotals(newTotal.userId, oldTotal[0].name, newTotal.name, oldTotal[0].date, newTotal.date, Number(oldTotal[0].value), Number(newTotal.value).toFixed(2))
   if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
     const newTotals = [...filteredInfo, newTotal];
     setTotals(newTotals.sort((a, b) => {
       return a.name.localeCompare(b.name);
     }))
-
+    return "ok";
   }
+  else
+    setErrorMessage(response.statusMessage)
 
 }
 
@@ -319,7 +286,7 @@ export function ErrorMessage({ errorMessage }) {
 
   return (<>
     <div>
-      <label>{errorMessage}</label>
+      <label id="negativeValue">{errorMessage}</label>
     </div>
   </>)
 }
@@ -499,34 +466,78 @@ function updateResumes(transactions, setResumes) {
 }
 
 
-export function EditButton({setEditMode}){
-  function handleClick(){
+export function EditButton({ setEditMode }) {
+  function handleClick() {
     setEditMode(true);
   }
-  return(<><button class="secundaryButtons" onClick={handleClick}>editar</button></>)
+  return (<><button class="secundaryButtons" onClick={handleClick}>editar</button></>)
 }
 
-export function EditTotalButton({setEditMode}){
-   const handleClick = async () => {
- /*   const response = await API.updateTotals(newTotal.userId, oldTotal[0].name, newTotal.name, oldTotal[0].date, newTotal.date, oldTotal[0].value, newValue.toFixed(2))
 
-  if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
-
-    const newTotals = [...filteredInfo, newTotal];
-
-    setTotals(newTotals.sort((a, b) => {
-      return a.name.localeCompare(b.name);
-    }))
-      
-    setEditMode(false);
-  } else
-    setErrorMessage(response.statusMessage)*/
+export function SaveButton({ setEditMode, userId, info, setInfo, table, setErrorMessage }) {
+  const handleClick = async () => {
+    if (table === "totals")
+      updateTotal(setEditMode, userId, info, setInfo, setErrorMessage)
+    else
+      updateTypes(setEditMode, userId, info, setInfo, setErrorMessage)
+    setEditMode(false)
   }
-  return(<><button class="secundaryButtons" onClick={handleClick}>guardar alterações</button></>)
+  return (<><button class="secundaryButtons" onClick={handleClick}>guardar alterações</button></>)
 }
 
-export function EditTypeButton({setEditMode}){
-   const handleClick = async () => {
-   }
-  return(<><button class="secundaryButtons" onClick={handleClick}>guardar alterações</button></>)
+
+
+export async function updateTotal(setEditMode, userId, info, setInfo, setErrorMessage) {
+
+  const purgeResponse = await API.purgeTotals(userId)
+  if (purgeResponse.statusCode === 200 && purgeResponse.statusMessage === "OK") {
+    if (info !== undefined)
+      for (const item of info) {
+
+        const response = await API.addTotals(
+          userId,
+          item.name,
+          getCurrentDate(),
+          item.value
+        );
+
+        if (
+          response.statusCode === 200 &&
+          response.statusMessage === "Total added with success"
+        ) {
+          setErrorMessage()
+        } else {
+          setErrorMessage(response.statusMessage);
+        }
+      }
+  }
+  else
+    setErrorMessage(purgeResponse.statusMessage);
+}
+
+export async function updateTypes(setEditMode, userId, info, setInfo, setErrorMessage) {
+
+  const purgeResponse = await API.purgeTypes(userId)
+  if (purgeResponse.statusCode === 200 && purgeResponse.statusMessage === "OK") {
+    if (info !== undefined)
+      for (const item of info) {
+
+        const response = await API.addTypes(
+          userId,
+          item.name
+        );
+
+        if (
+          response.statusCode === 200 &&
+          response.statusMessage === "Type added with success"
+        ) {
+          setErrorMessage()
+        } else {
+          setErrorMessage(response.statusMessage);
+        }
+      }
+  }
+  else
+    setErrorMessage(purgeResponse.statusMessage);
+
 }

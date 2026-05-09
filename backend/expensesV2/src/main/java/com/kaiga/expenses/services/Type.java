@@ -23,23 +23,22 @@ public class Type {
     }
 
 
-
     public BaseResponse addType(int userId, String name) {
 
         String preChecks = searchData(String.valueOf(userId), name);
 
-        if(preChecks.equals(USER_NOT_FOUND))
+        if (preChecks.equals(USER_NOT_FOUND))
             return new BaseResponse(USER_NOT_FOUND, 404);
-        if(preChecks.equals(TYPE_ALREADY_EXISTS))
+        if (preChecks.equals(TYPE_ALREADY_EXISTS))
             return new BaseResponse(TYPE_ALREADY_EXISTS, 200);
 
         List<Object> values = new ArrayList<>();
         values.add(userId);
         values.add(name);
 
-        String response =  core.add(TYPE.getId(), values);
+        String response = core.add(TYPE.getId(), values);
 
-        if(response.equals(SUCCESS))
+        if (response.equals(SUCCESS))
             return new BaseResponse(TYPE_ADDED, 200);
         else
             return new BaseResponse(ERROR_MESSAGE + response, 400);
@@ -47,23 +46,22 @@ public class Type {
     }
 
     public BaseResponse getAllTypes() {
-        Map<String, Object> response =  core.read(TYPE.getId()).sheetData();
-        return new BaseResponse("OK", 200,  response);
+        Map<String, Object> response = core.read(TYPE.getId()).sheetData();
+        return new BaseResponse("OK", 200, response);
     }
 
 
-
     public BaseResponse getTypes(int userId) {
-        if(searchData(String.valueOf(userId), null).equals(USER_NOT_FOUND))
+        if (searchData(String.valueOf(userId), null).equals(USER_NOT_FOUND))
             return new BaseResponse(USER_NOT_FOUND, 404);
 
         Map<String, Object> response = new LinkedHashMap<>();
         List<Map<String, String>> types = new ArrayList<>();
 
-        ExcelSheet sheet =  core.read(TYPE.getId());
+        ExcelSheet sheet = core.read(TYPE.getId());
 
-        for(ExcelRow row : sheet.getExcelRows()){
-            if(row.getData().get(0).equals(String.valueOf(userId))) {
+        for (ExcelRow row : sheet.getExcelRows()) {
+            if (row.getData().get(0).equals(String.valueOf(userId))) {
                 Map<String, String> info = new HashMap<>();
                 info.put("userId", row.getData().get(0));
                 info.put("name", row.getData().get(1));
@@ -71,26 +69,26 @@ public class Type {
             }
         }
 
-        if(!types.isEmpty())
+        if (!types.isEmpty())
             response.put("types", types);
 
-        return new BaseResponse("OK", 200,  response);
+        return new BaseResponse("OK", 200, response);
     }
 
 
     public BaseResponse deleteType(int userId, String name) {
-        if(searchData(String.valueOf(userId), null).equals(USER_NOT_FOUND))
+        if (searchData(String.valueOf(userId), null).equals(USER_NOT_FOUND))
             return new BaseResponse(USER_NOT_FOUND, 404);
-        if(searchData(String.valueOf(userId), name).equals(TYPE_NOT_FOUND))
+        if (searchData(String.valueOf(userId), name).equals(TYPE_NOT_FOUND))
             return new BaseResponse(TYPE_NOT_FOUND, 404);
 
         List<Object> params = new ArrayList<>();
-        params.add(String.valueOf( userId));
+        params.add(String.valueOf(userId));
         params.add(name);
 
         String response = core.delete(TYPE.getId(), params);
 
-        if(response.equals(SUCCESS))
+        if (response.equals(SUCCESS))
             return new BaseResponse(TYPE_DELETED, 200);
         else
             return new BaseResponse(ERROR_MESSAGE + response, 400);
@@ -100,51 +98,71 @@ public class Type {
 
     public BaseResponse updateType(int userId, String oldName, String newName) {
 
-        if(searchData(String.valueOf(userId), null).equals(USER_NOT_FOUND))
+        if (searchData(String.valueOf(userId), null).equals(USER_NOT_FOUND))
             return new BaseResponse(USER_NOT_FOUND, 404);
-        if(searchData(String.valueOf(userId), oldName).equals(TYPE_NOT_FOUND))
+        if (searchData(String.valueOf(userId), oldName).equals(TYPE_NOT_FOUND))
             return new BaseResponse(TYPE_NOT_FOUND, 404);
-        if(searchData(String.valueOf(userId), newName).equals(TYPE_ALREADY_EXISTS))
+        if (searchData(String.valueOf(userId), newName).equals(TYPE_ALREADY_EXISTS))
             return new BaseResponse(TYPE_ALREADY_EXISTS, 200);
 
         List<Object> oldParams = new ArrayList<>();
-        oldParams.add(String.valueOf( userId));
+        oldParams.add(String.valueOf(userId));
         oldParams.add(oldName);
 
         List<Object> newParams = new ArrayList<>();
-        newParams.add(String.valueOf( userId));
+        newParams.add(String.valueOf(userId));
         newParams.add(newName);
 
         String response = core.update(TYPE.getId(), oldParams, newParams);
 
-        if(response.equals(SUCCESS))
+        if (response.equals(SUCCESS))
             return new BaseResponse(TYPE_UPDATED, 200);
         else
             return new BaseResponse(ERROR_MESSAGE + response, 400);
 
     }
 
-    public void purgeTypes(){
+    public void purgeTypes() {
         core.purge(TYPE.getId());
     }
 
-    public BaseResponse purgeTotalsOut(int userID){
-        core.purge(TYPE.getId());
-        return new BaseResponse("OK", 200);
+    public BaseResponse purgeTypesByUserId(String userId) {
+        ExcelSheet sheet = core.read(TYPE.getId());
+        int success = 0;
+        int failed = 0;
+        int notApplied = 0;
+        for (ExcelRow row : sheet.getExcelRows()) {
+            if (row.getData().get(0).equals(userId)) {
+                List<Object> params = new ArrayList<>();
+                params.add(userId);
+                params.add(row.getData().get(1));
+                String response = core.delete(TYPE.getId(), params);
+                if (response.equals(SUCCESS))
+                    success++;
+                else
+                    failed++;
+            } else
+                notApplied++;
+        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("Success", success);
+        response.put("Failed", failed);
+        response.put("Not_Applied", notApplied);
+        return new BaseResponse("OK", 200, response);
     }
 
 
-    private String searchData(String userId, String type){
+    private String searchData(String userId, String type) {
         List<String> elements = new ArrayList<>();
         List<String> headerNames = new ArrayList<>();
 
-        if(userId != null) {
+        if (userId != null) {
             headerNames.add("id");
             elements.add(userId);
             if (!core.rowExists(USERS.getId(), elements, headerNames))
                 return USER_NOT_FOUND;
         }
-        if(type != null) {
+        if (type != null) {
             headerNames.clear();
             elements.clear();
 

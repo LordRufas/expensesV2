@@ -1,0 +1,19 @@
+info:
+  name: purgeTypes
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: http://localhost:8080/purgeTypes?userId=0
+  params:
+    - name: userId
+      value: "0"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
