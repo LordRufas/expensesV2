@@ -149,30 +149,6 @@ public class Core {
         }
     }
 
-    public String purgeById(int sheetIndex, int id){
-        File file = new File(fileName);
-        try (
-                FileInputStream fis = new FileInputStream(file);
-                Workbook workbook = new XSSFWorkbook(fis)
-        ) {
-            Sheet sheet = workbook.getSheetAt(sheetIndex);
-
-
-            for (int i = sheet.getLastRowNum(); i > 0; i--) {
-                if(sheet.getRow(i).getCell(0).equals(id))
-                    deleteRowAndShift(sheet, sheet.getRow(i));
-            }
-
-            try (FileOutputStream fos = new FileOutputStream(file)) {
-                workbook.write(fos);
-            }
-            return SUCCESS;
-
-        } catch (Exception e) {
-            return ERROR_RESPONSE + e.getMessage();
-        }
-    }
-
     private ExcelRow getExcelRow(Row row) {
         ExcelRow excelRow = new ExcelRow();
         for (int i = 0; i < row.getLastCellNum(); i++) {

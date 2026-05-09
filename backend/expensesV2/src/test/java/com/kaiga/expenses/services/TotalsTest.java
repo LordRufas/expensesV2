@@ -23,7 +23,6 @@ class TotalsTest {
         total.purgeTotals();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         total.addTotal(1,"01/01/1990","test",1.0);
         assertEquals("{data=[{date=01/01/1990, name=test, userId=1, value=1.0}]}", total.getAllTotals().getResponse().toString());
     }
@@ -43,7 +42,6 @@ class TotalsTest {
         total.purgeTotals();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         total.addTotal(1,"01/01/1990","test",1.0);
         assertEquals("{data=[{date=01/01/1990, name=test, userId=1, value=1.0}]}", total.getAllTotals().getResponse().toString());
         BaseResponse response = total.addTotal(1,"01/01/1990","test",1.0);
@@ -128,7 +126,7 @@ class TotalsTest {
         user.createNewUser("user",  "pass");
         BaseResponse response = total.addTotal(1,"01/01/1990","test",1.0);
         assertEquals("Total added with success", response.getStatusMessage());
-        response = total.deleteTotal(2,"01/01/1990","test1",1.0);
-        assertEquals("User doesn't exist", response.getStatusMessage());
+        response = total.deleteTotal(1,"01/01/1990","test1",1.0);
+        assertEquals("Total doesn't exist", response.getStatusMessage());
     }
 }

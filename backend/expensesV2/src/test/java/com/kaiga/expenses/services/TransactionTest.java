@@ -106,6 +106,19 @@ class TransactionTest {
     }
 
     @Test
+    void updateTransactionTypeNotFound() {
+        user.purgeUsers();
+        type.purgeTypes();
+        transaction.purgeTransactions();
+        user.createNewUser("user",  "pass");
+        type.addType(1, "test");
+        transaction.addTransaction(1,"01/01/1990", "test", 1.0, false);
+        BaseResponse response = transaction.updateTransaction(new UpdateUserTransactions(1,"01/01/1990", "test", 1.0, false,"01/01/1990", "test1", 1.0, true));
+        assertEquals("Type doesn't exist", response.getStatusMessage());
+
+    }
+
+    @Test
     void deleteTransaction() {
         user.purgeUsers();
         type.purgeTypes();

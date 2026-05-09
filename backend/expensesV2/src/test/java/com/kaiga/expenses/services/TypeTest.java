@@ -22,7 +22,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         type.addType(1, "test");
         assertEquals("{types=[{name=test, userId=1}]}",type.getTypes(1).getResponse().toString());
     }
@@ -33,7 +32,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         BaseResponse  response = type.addType(2, "test");
         assertEquals("User doesn't exist",response.getStatusMessage());
     }
@@ -44,7 +42,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         type.addType(1, "test");
         BaseResponse  response = type.addType(1, "test");
         assertEquals("Type already exist",response.getStatusMessage());}
@@ -55,7 +52,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user1",  "pass1");
         type.addType(1, "test");
         type.addType(1, "test1");
@@ -69,7 +65,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         type.addType(1, "test");
         type.addType(1, "test1");
         type.addType(2, "test2");
@@ -83,7 +78,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         type.addType(1, "test");
         assertEquals("User doesn't exist",type.getTypes(2).getStatusMessage());
 
@@ -96,7 +90,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         type.addType(1, "test");
         type.addType(1, "test1");
         type.addType(2, "test2");
@@ -111,7 +104,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         type.addType(1, "test");
         assertEquals("{types=[{name=test, userId=1}]}",type.getTypes(1).getResponse().toString());
         BaseResponse response = type.deleteType(2,"test");
@@ -125,7 +117,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         type.addType(1, "test");
         assertEquals("{types=[{name=test, userId=1}]}",type.getTypes(1).getResponse().toString());
         BaseResponse response = type.deleteType(1,"test1");
@@ -139,7 +130,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         type.addType(1, "test");
         assertEquals("{types=[{name=test, userId=1}]}",type.getTypes(1).getResponse().toString());
         BaseResponse response = type.updateType(1, "test", "test1");
@@ -153,7 +143,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         type.addType(1, "test");
         assertEquals("{types=[{name=test, userId=1}]}",type.getTypes(1).getResponse().toString());
         BaseResponse response = type.updateType(3,"test1", "test");
@@ -167,7 +156,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         type.addType(1, "test");
         assertEquals("{types=[{name=test, userId=1}]}",type.getTypes(1).getResponse().toString());
         BaseResponse response = type.updateType(1,"test1", "test");
@@ -181,7 +169,6 @@ class TypeTest {
         type.purgeTypes();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         type.addType(1, "test");
         type.addType(1, "test1");
         assertEquals("{types=[{name=test, userId=1}, {name=test1, userId=1}]}",type.getTypes(1).getResponse().toString());

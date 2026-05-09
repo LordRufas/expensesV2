@@ -42,7 +42,7 @@ class ControllerTest {
         user.purgeUsers();
         assertEquals("{data=[]}", userController.getAllUsers().getResponse().toString());
         userController.createUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", userController.getAllUsers().getResponse().toString());
+        assertEquals("{data=[{password=MiAnMg==, id=1, username=user}]}", userController.getAllUsers().getResponse().toString());
     }
 
     @Test
@@ -60,7 +60,7 @@ class ControllerTest {
         response = userController.getAllUsers();
         assertEquals(200,response.getStatusCode());
         assertEquals("OK", response.getStatusMessage());
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", userController.getAllUsers().getResponse().toString());
+        assertEquals("{data=[{password=MiAnMg==, id=1, username=user}]}", userController.getAllUsers().getResponse().toString());
 
         response = userController.login("user",  "pass");
 
@@ -312,6 +312,56 @@ class ControllerTest {
         assertEquals(200, response.getStatusCode());
         assertEquals("OK", response.getStatusMessage());
         assertEquals("{data=[]}", response.getResponse().toString());
+
+    }
+
+    @Test
+    void purgeTypes() {
+        user.purgeUsers();
+        type.purgeTypes();
+        BaseResponse response = userController.getAllUsers();
+        assertEquals("{data=[]}", response.getResponse().toString());
+        response = userController.createUser("user",  "pass");
+        assertEquals(200, response.getStatusCode());
+        assertEquals("OK", response.getStatusMessage());
+        type.addType(1, "test");
+        type.addType(1, "test1");
+        response = userController.getTypesByUser(1);
+        assertEquals(200, response.getStatusCode());
+        assertEquals("OK", response.getStatusMessage());
+        assertEquals("{types=[{name=test, userId=1}, {name=test1, userId=1}]}", response.getResponse().toString());
+        userController.createUser("user1",  "pass");
+        type.addType(2, "test");
+        type.addType(2, "test1");
+        response = userController.purgeTypes("1" ) ;
+        assertEquals("OK", response.getStatusMessage() );
+        assertEquals(200, response.getStatusCode() );
+
+
+    }
+
+    @Test
+    void purgeTotals() {
+        user.purgeUsers();
+        totals.purgeTotals();
+        userController.createUser("user",  "pass");
+        userController.createUser("user1",  "pass");
+        BaseResponse response = userController.addTotal(1, "test","01/01/1990",1.0);
+        assertEquals("Total added with success", response.getStatusMessage());
+        response = userController.getAllTotals();
+        assertEquals(200, response.getStatusCode());
+        assertEquals("OK", response.getStatusMessage());
+        assertEquals("{data=[{date=01/01/1990, name=test, userId=1, value=1.0}]}", response.getResponse().toString());
+        response = userController.addTotal(2, "test","01/01/1990",1.0);
+        assertEquals("Total added with success", response.getStatusMessage());
+        response = userController.purgeTotals("1");
+        assertEquals(200, response.getStatusCode());
+        assertEquals("OK", response.getStatusMessage());
+        response = userController.getAllTotals();
+        assertEquals(200, response.getStatusCode());
+        assertEquals("OK", response.getStatusMessage());
+        assertEquals("{data=[{date=01/01/1990, name=test, userId=2, value=1.0}]}", response.getResponse().toString());
+
 
     }
 }

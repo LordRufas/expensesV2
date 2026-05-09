@@ -1,5 +1,6 @@
 package com.kaiga.expenses.services;
 
+import com.kaiga.expenses.entity.BaseResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +24,7 @@ class UserTest {
         user.purgeUsers();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
+        assertEquals("{data=[{password=MiAnMg==, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
     }
 
     @Test
@@ -31,9 +32,19 @@ class UserTest {
         user.purgeUsers();
         assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user",  "pass");
-        assertEquals("{data=[{password=pass, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
+        assertEquals("{data=[{password=MiAnMg==, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
         user.createNewUser("user1",  "pass1");
-        assertEquals("{data=[{password=pass, id=1, username=user}, {password=pass1, id=2, username=user1}]}", user.getAllUsers().getResponse().toString());
+        assertEquals("{data=[{password=MiAnMg==, id=1, username=user}, {password=MiAnMmU=, id=2, username=user1}]}", user.getAllUsers().getResponse().toString());
+    }
+
+    @Test
+    void create2NewUserShouldFail() {
+        user.purgeUsers();
+        assertEquals("{data=[]}", user.getAllUsers().getResponse().toString());
+        user.createNewUser("user",  "pass");
+        assertEquals("{data=[{password=MiAnMg==, id=1, username=user}]}", user.getAllUsers().getResponse().toString());
+        BaseResponse response = user.createNewUser("user",  "pass1");
+        assertEquals("User already exists", response.getStatusMessage());
     }
 
 

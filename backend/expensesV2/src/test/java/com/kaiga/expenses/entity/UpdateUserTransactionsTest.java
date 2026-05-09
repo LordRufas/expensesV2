@@ -87,12 +87,12 @@ class UpdateUserTransactionsTest {
     }
 
     @Test
-    void setNewIsRevenue() {
+    void testSetNewIsRevenue() {
         UpdateUserTransactions transactions =
                 new UpdateUserTransactions(1, "01/01/1990", "test", 1.0, false
                         , "01/01/1990", "test", 1.0, true);
         assertTrue(transactions.isNewIsRevenue());
-        transactions.setOldIsRevenue(false);
-        assertTrue(transactions.isNewIsRevenue());
+        transactions.setNewIsRevenue(false);
+        assertFalse(transactions.isNewIsRevenue());
     }
 }

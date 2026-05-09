@@ -17,6 +17,8 @@ public class User {
 
     private final Core core;
 
+    private static final String KEY = "BATATA";
+
     public User(Core core) {
         this.core = core;
     }
@@ -39,7 +41,7 @@ public class User {
         List<Object> values = new ArrayList<>();
         values.add(id + 1);
         values.add(username);
-        values.add(password);
+        values.add(encrypt(password));
         ExcelSheet users = core.read(USERS.getId());
 
         for(ExcelRow row: users.getExcelRows()){
@@ -74,7 +76,7 @@ public class User {
         for(ExcelRow row : sheet.getExcelRows()){
             if(row.getData().get(1).equals(username)){
                 found = true;
-                if(row.getData().get(2).equals(password)){
+                if(decrypt(row.getData().get(2)).equals(password)){
                     response = SUCCESS;
                     userRow = row;
                 }
@@ -95,5 +97,35 @@ public class User {
             return new BaseResponse("OK", 200,info );
         }
 
+    }
+
+
+    public String encrypt(String data){
+        return base64Encode(xorWithKey(data));
+    }
+
+    public String decrypt(String data){
+        return xorWithKey(base64Decode(data));
+
+    }
+
+    private static String xorWithKey(String input) {
+        StringBuilder output = new StringBuilder();
+
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            char k = KEY.charAt(i % KEY.length());
+            output.append((char) (c ^ k));
+        }
+
+        return output.toString();
+    }
+
+    private static String base64Decode(String input) {
+        return new String(Base64.getDecoder().decode(input));
+    }
+
+    private static String base64Encode(String input) {
+        return Base64.getEncoder().encodeToString(input.getBytes());
     }
 }
