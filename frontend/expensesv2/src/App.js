@@ -24,7 +24,7 @@ export default function App() {
           errorMessage={errorMessage}
           SetErrorMessage={SetErrorMessage}
         />
-      ) : page === 'main' ? (<MainPage username={username} userId={userId} setPage={setPage} />)
+      ) : page === 'main' ? (<MainPage username={username} userId={userId} setPage={setPage} setErrorMessage={SetErrorMessage}/>)
         : page === 'history' ? (<HistoryPage username={username} userId={userId} setPage={setPage} />)
           : page === 'newUser' ? <NewUserPage setPage={setPage}
             errorMessage={errorMessage}

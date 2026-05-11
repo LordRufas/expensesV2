@@ -4,7 +4,7 @@ import "../css/App.css"
 import { useState, useEffect } from "react";
 import { fetchTypes, fetchTotals } from "./Api";
 
-export function MainPage({ username, setPage, userId }) {
+export function MainPage({ username, setPage, userId,setErrorMessage }) {
   const [totals, setTotals] = useState([]);
   const [types, setTypes] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -33,7 +33,7 @@ export function MainPage({ username, setPage, userId }) {
 
       <div class="headerButtons">
         <Buttons.HistoryButton setPage={setPage} />
-        <Buttons.LogoutButton setPage={setPage} />
+        <Buttons.LogoutButton setPage={setPage} setErrorMessage={setErrorMessage} />
       </div>
 
       <div>

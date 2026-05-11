@@ -1,9 +1,10 @@
 import { useState } from "react";
 import * as API from "./Api";
 
-export function LogoutButton({ setPage }) {
+export function LogoutButton({ setPage, setErrorMessage }) {
   function goToPage() {
     setPage('login');
+     setErrorMessage("");
   }
 
   return (<><button class="headerButton" onClick={goToPage}>logout</button></>)
