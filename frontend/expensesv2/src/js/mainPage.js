@@ -60,7 +60,7 @@ function TransactionDiv({ userId, totals, setTotals, types, transactions, setTra
     <div class="small-container">
       <h2>Transações</h2>
       <div class="table-container">
-        <Tables.TransactionTable info={transactions} editMode={true} userId={userId} setInfo={setTransactions} setErrorMessage={setErrorMessage}></Tables.TransactionTable>
+        <Tables.TransactionTable totals={totals} setTotals={setTotals} info={transactions} editMode={true} userId={userId} setInfo={setTransactions} setErrorMessage={setErrorMessage}></Tables.TransactionTable>
       </div>
       <div class="child">
         <input class="calendar" type="month" onChange={(e) => setDate(e.target.value)} />

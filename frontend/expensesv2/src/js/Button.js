@@ -4,7 +4,7 @@ import * as API from "./Api";
 export function LogoutButton({ setPage, setErrorMessage }) {
   function goToPage() {
     setPage('login');
-     setErrorMessage("");
+    setErrorMessage("");
   }
 
   return (<><button class="headerButton" onClick={goToPage}>logout</button></>)
@@ -151,8 +151,8 @@ export function AddTransactionButton({ userId, date, value, type, total, isReven
             total: total
           };
 
-          const response = await changeTotal(value, total, totals, setTotals, isRevenue,userId, setErrorMessage);
-          if(response === "ok")
+          const response = await changeTotal(value, total, totals, setTotals, isRevenue, userId, setErrorMessage);
+          if (response === "ok")
             setTransaction(prev => [...transactions, newTransaction]);
         } else {
           setErrorMessage(`Erro generico: ${response.statusMessage}`);
@@ -167,22 +167,64 @@ export function AddTransactionButton({ userId, date, value, type, total, isReven
 
 
 
-export async function changeTotal(value, total, totals, setTotals,isRevenue, userId,setErrorMessage) {
+export async function changeTotal(value, total, totals, setTotals, isRevenue, userId, setErrorMessage) {
 
   const filteredInfo = totals.filter(item => item.name !== total);
   const oldTotal = totals.filter(item => item.name === total);
-  let newValue =0;
-  if(isRevenue === true)
+  let newValue = 0;
+  if (isRevenue) {
     newValue = Number(oldTotal[0].value) + Number(value);
-  else
-     newValue = Number(oldTotal[0].value) - Number(value);
-  let newTotal =  {
-      date: oldTotal[0].date,
-      name: oldTotal[0].name,
-      userId: userId,
-      value: newValue
+  } else {
+    newValue = Number(oldTotal[0].value) - Number(value);
+  }
 
-    };
+  newValue = parseFloat(newValue.toFixed(2));
+  let newTotal = {
+    date: oldTotal[0].date,
+    name: oldTotal[0].name,
+    userId: userId,
+    value: newValue
+
+  };
+
+
+
+
+  const response = await API.updateTotals(newTotal.userId, oldTotal[0].name, newTotal.name, oldTotal[0].date, newTotal.date, Number(oldTotal[0].value), Number(newTotal.value).toFixed(2))
+  if (response.statusCode === 200 && response.statusMessage === "Total updated with success") {
+    const newTotals = [...filteredInfo, newTotal];
+    setTotals(newTotals.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    }))
+    return "ok";
+  }
+  else
+    setErrorMessage(response.statusMessage)
+
+}
+
+
+
+export async function undoTransaction(value, total, totals, setTotals, isRevenue, userId, setErrorMessage) {
+
+  const filteredInfo = totals.filter(item => item.name !== total);
+  const oldTotal = totals.filter(item => item.name === total);
+  let newValue = 0;
+  if (isRevenue) {
+    newValue = Number(oldTotal[0].value) - Number(value);
+  } else {
+    newValue = Number(oldTotal[0].value) + Number(value);
+  }
+
+  // If you need to ensure it's limited to 2 decimal places before sending to the API:
+  newValue = parseFloat(newValue.toFixed(2));
+  let newTotal = {
+    date: oldTotal[0].date,
+    name: oldTotal[0].name,
+    userId: userId,
+    value: newValue
+
+  };
 
 
 
@@ -233,7 +275,10 @@ export function AddTotalButton({ userId, date, value, name, setErrorMessage, tot
           name: name
         };
 
-        setTotals(prev => [...(prev || []), newTotal]);
+        setTotals(prev => {
+          const newArray = [...(prev || []), newTotal];
+          return newArray.sort((a, b) => a.name.localeCompare(b.name));
+        })
         setErrorMessage("");
       }
       else
@@ -271,7 +316,10 @@ export function AddTypeButton({ userId, name, setErrorMessage, types, setTypes }
           name: name
         };
 
-        setTypes(prev => [...(prev || []), newType]);
+        setTypes(prev => {
+          const newArray = [...(prev || []), newType];
+          return newArray.sort((a, b) => a.name.localeCompare(b.name));
+        });
         setErrorMessage("")
       }
       else
@@ -304,11 +352,14 @@ export function GetTransactionByUserButton({ date, userId, setTransaction, setRe
         if (Object.entries(response.response).length > 0 && response.response.transactions.length > 0) {
           const transactions = filterTransactions(date, response.response.transactions);
           if (transactions.length > 0) {
-            setTransaction(transactions)
+            setTransaction(transactions.sort((a, b) => a.typeName.localeCompare(b.typeName)))
             updateResumes(transactions, setResumes)
           }
-          else
+          else{
             setErrorMessage("Não existe transações para esse mes");
+            setResumes([])
+            setTransaction([])
+          }
         }
         else
           setErrorMessage("Não existe transações para esse mes");
@@ -403,7 +454,7 @@ export function DeleteTypeButton({ userId, data, info, setInfo, setErrorMessage 
 }
 
 
-export function DeleteTransactionButton({ userId, data, info, setInfo, setErrorMessage }) {
+export function DeleteTransactionButton({ totals, setTotals, userId, data, info, setInfo, setErrorMessage }) {
 
   const [confirm, setConfirm] = useState(false);
 
@@ -417,6 +468,7 @@ export function DeleteTransactionButton({ userId, data, info, setInfo, setErrorM
     if (response.statusCode === 200 && response.statusMessage === "Transaction deleted with success") {
       setErrorMessage("");
       deleteValue(data, info, setInfo)
+      await undoTransaction(data.value, data.total, totals, setTotals, data.isRevenue, userId, setErrorMessage);
       setConfirm(false);
     } else {
       setErrorMessage(`Erro generico: ${response.statusMessage}`);
@@ -453,16 +505,22 @@ function updateResumes(transactions, setResumes) {
       else
         existingType.value -= parseFloat(current.value);
     } else {
-      acc.push({
-        name: current.typeName,
-        value: parseFloat(current.value)
-      });
+      if (current.isRevenue === "true")
+        acc.push({
+          name: current.typeName,
+          value: parseFloat(current.value)
+        });
+      else
+        acc.push({
+          name: current.typeName,
+          value: parseFloat(current.value) * -1
+        });
     }
 
     return acc;
   }, []);
 
-  setResumes(groupedTransactions);
+  setResumes(groupedTransactions.sort((a, b) => a.name.localeCompare(b.name)));
   return;
 }
 
@@ -481,6 +539,7 @@ export function SaveButton({ setEditMode, userId, info, setInfo, table, setError
       updateTotal(setEditMode, userId, info, setInfo, setErrorMessage)
     else
       updateTypes(setEditMode, userId, info, setInfo, setErrorMessage)
+    setInfo(info.sort((a, b) => a.name.localeCompare(b.name)))
     setEditMode(false)
   }
   return (<><button class="secundaryButtons" onClick={handleClick}>guardar alterações</button></>)
@@ -520,7 +579,7 @@ export async function updateTypes(setEditMode, userId, info, setInfo, setErrorMe
 
   const purgeResponse = await API.purgeTypes(userId)
   if (purgeResponse.statusCode === 200 && purgeResponse.statusMessage === "OK") {
-    if (info !== undefined)
+    if (info !== undefined) {
       for (const item of info) {
 
         const response = await API.addTypes(
@@ -537,6 +596,7 @@ export async function updateTypes(setEditMode, userId, info, setInfo, setErrorMe
           setErrorMessage(response.statusMessage);
         }
       }
+    }
   }
   else
     setErrorMessage(purgeResponse.statusMessage);

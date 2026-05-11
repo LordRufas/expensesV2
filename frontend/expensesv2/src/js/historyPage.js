@@ -1,9 +1,9 @@
 
 import { useState } from "react";
 import { LogoutButton, MainPageButton, Title, GetTransactionByUserButton, ErrorMessage } from "./Button";
-import { TransactionTable, ResumeTable } from "./Table";
+import { TransactionTable, ResumeTable, Balance } from "./Table";
 
-export function HistoryPage({ username, setPage, userId }) {
+export function HistoryPage({ username, setPage, userId, setGlobalErrorMessage }) {
   const [month, setMonth] = useState('');
 
   const [transactions, setTransactions] = useState([]);
@@ -15,7 +15,7 @@ export function HistoryPage({ username, setPage, userId }) {
     <Title username={username}></Title>
     <div class="headerButtons">
       <MainPageButton setPage={setPage}></MainPageButton>
-      <LogoutButton setPage={setPage}></LogoutButton>
+      <LogoutButton setPage={setPage} setErrorMessage={setGlobalErrorMessage}></LogoutButton>
     </div>
     <div class="child">
 
@@ -24,11 +24,13 @@ export function HistoryPage({ username, setPage, userId }) {
       <ErrorMessage errorMessage={errorMessage}></ErrorMessage>
     </div>
     <div class="small-containerHistory">
-     <div class ="table-container">
-      <TransactionTable info={transactions} editMode={false}></TransactionTable>
+      <div class="table-container">
+        <div><TransactionTable info={transactions} editMode={false}></TransactionTable></div>
       </div>
+        <div><Balance data={transactions}></Balance></div>
       <div class="child">
-      <ResumeTable info={resumes} setInfo={setResumes} ></ResumeTable>
+        <ResumeTable info={resumes}></ResumeTable>
       </div>
-    </div></>);
+    </div>
+      </>);
 }

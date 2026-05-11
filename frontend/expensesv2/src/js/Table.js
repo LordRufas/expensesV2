@@ -1,7 +1,48 @@
 import * as Buttons from "./Button";
 import { useState } from "react";
 
-export function ResumeTable({ info, setInfo }) {
+export function Balance({ data }) {
+  let balance = 0;
+  let negative = 0;
+  let positive = 0;
+
+  for (const item of data) {
+    if (item.isRevenue === "true") {
+      positive += Number(item.value);
+      balance += Number(item.value);
+    }
+    else {
+      negative += Number(item.value);
+      balance -= Number(item.value);
+    }
+  }
+
+  return (
+    <>{
+      data && data.length > 0 && <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Soma das receitas</th>
+              <th>Soma das despesas</th>
+              <th>Balanço final</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{positive.toFixed(2)}</td>
+              <td>{negative.toFixed(2)}</td>
+              {balance > 0 && <td id="positiveValue">{balance.toFixed(2)} </td>}
+              {balance < 0 && <td id="negativeValue">{balance.toFixed(2)} </td>}
+              {balance === 0 && <td>{balance.toFixed(2)} </td>}
+            </tr>
+          </tbody>
+        </table>
+      </div>} </>
+  );
+}
+
+export function ResumeTable({ info }) {
   return (
     <table border="1">
       <thead>
@@ -15,10 +56,24 @@ export function ResumeTable({ info, setInfo }) {
         <tbody>
           {
             info.map((data) => (<>
-              <tr>
-                <td>{data.name}</td>
-                <td>{data.value} </td>
-              </tr>
+              {data.value > 0 &&
+                <tr>
+                  <td id="positiveValue">{data.name}</td>
+                  <td id="positiveValue">{data.value.toFixed(2)} </td>
+                </tr>
+              }
+              {data.value < 0 &&
+                <tr>
+                  <td id="negativeValue">{data.name}</td>
+                  <td id="negativeValue">{data.value.toFixed(2)} </td>
+                </tr>
+              }
+              {data.value === 0 &&
+                <tr>
+                  <td>{data.name}</td>
+                  <td>{data.value.toFixed(2)} </td>
+                </tr>
+              }
             </>))
           }
         </tbody>
@@ -79,7 +134,7 @@ export function TotalTable({ info, setInfo, userId, setErrorMessage }) {
   );
 }
 
-export function TransactionTable({ info, userId, editMode, setInfo, setErrorMessage }) {
+export function TransactionTable({ info, totals, setTotals, userId, editMode, setInfo, setErrorMessage }) {
   return (
     <table border="1">
       <thead>
@@ -99,24 +154,24 @@ export function TransactionTable({ info, userId, editMode, setInfo, setErrorMess
         <tbody>
           {
             info.map((data) => (<>
-            {
-              data.isRevenue === true || data.isRevenue === "true" ? 
-              <tr>
-                <td id = "positiveValue"> {data.date} </td>
-                <td id = "positiveValue">{data.typeName} </td>
-                {editMode && <td id = "positiveValue">{data.total} </td>}
-                <td id = "positiveValue">{data.value} </td>
-                {editMode && <td><Buttons.DeleteTransactionButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton ></td>}
-              </tr>
-              :
-              <tr>
-                <td id = "negativeValue"> {data.date} </td>
-                <td id = "negativeValue">{data.typeName} </td>
-                {editMode && <td id = "negativeValue">{data.total} </td>}
-                <td id = "negativeValue">{data.value} </td>
-                {editMode && <td><Buttons.DeleteTransactionButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton ></td>}
-              </tr>
-            }
+              {
+                data.isRevenue === true || data.isRevenue === "true" ?
+                  <tr>
+                    <td id="positiveValue"> {data.date} </td>
+                    <td id="positiveValue">{data.typeName} </td>
+                    {editMode && <td id="positiveValue">{data.total} </td>}
+                    <td id="positiveValue">{data.value} </td>
+                    {editMode && <td><Buttons.DeleteTransactionButton totals={totals} setTotals={setTotals} userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton ></td>}
+                  </tr>
+                  :
+                  <tr>
+                    <td id="negativeValue"> {data.date} </td>
+                    <td id="negativeValue">{data.typeName} </td>
+                    {editMode && <td id="negativeValue">{data.total} </td>}
+                    <td id="negativeValue">{data.value} </td>
+                    {editMode && <td><Buttons.DeleteTransactionButton totals={totals} setTotals={setTotals} userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton ></td>}
+                  </tr>
+              }
             </>))
           }
         </tbody>
