@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { LogoutButton, MainPageButton, Title, GetTransactionByUserButton, ErrorMessage } from "./Button";
+import { LogoutButton, MainPageButton, Title, GetTransactionByUserButton, ErrorMessage ,DownloadButton} from "./Button";
 import { TransactionTable, ResumeTable, Balance } from "./Table";
 
 export function HistoryPage({ username, setPage, userId, setGlobalErrorMessage }) {
@@ -21,6 +21,7 @@ export function HistoryPage({ username, setPage, userId, setGlobalErrorMessage }
 
       <input class="calendar" type="month" onChange={(e) => setMonth(e.target.value)} />
       <GetTransactionByUserButton userId={userId} date={month} setTransaction={setTransactions} setResumes={setResumes} setErrorMessage={setErrorMessage}></GetTransactionByUserButton>
+      <DownloadButton userId={userId} date={month} transactions={transactions} setErrorMessage={setErrorMessage}></DownloadButton>
       <ErrorMessage errorMessage={errorMessage}></ErrorMessage>
     </div>
     <div class="small-containerHistory">

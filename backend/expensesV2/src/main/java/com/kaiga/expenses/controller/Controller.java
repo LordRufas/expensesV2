@@ -8,6 +8,9 @@ import com.kaiga.expenses.services.Transaction;
 import com.kaiga.expenses.services.Type;
 import com.kaiga.expenses.services.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -141,6 +144,24 @@ public class Controller {
     @PostMapping("/purgeTypes")
     public BaseResponse purgeTypes(@RequestParam String userId) {
         return type.purgeTypesByUserId(userId);
+    }
+
+
+    @GetMapping("getFile")
+    @CrossOrigin(origins = "http://localhost:3000", exposedHeaders = {"Content-Disposition", "Content-Length"})
+    public ResponseEntity<byte[]> getFile(@RequestParam int userId, @RequestParam String date ){
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=" + date + ".xlsx"
+                )
+                .contentType(
+                        MediaType.parseMediaType(
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        )
+                )
+                .body(transaction.getFile(userId, date));
     }
 
 

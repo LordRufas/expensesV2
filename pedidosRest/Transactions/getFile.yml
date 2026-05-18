@@ -1,0 +1,22 @@
+info:
+  name: getFile
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: http://localhost:8080/getFile?userId=2&date="asd"
+  params:
+    - name: userId
+      value: "2"
+      type: query
+    - name: date
+      value: '"asd"'
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

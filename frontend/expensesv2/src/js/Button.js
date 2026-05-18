@@ -375,6 +375,20 @@ export function GetTransactionByUserButton({ date, userId, setTransaction, setRe
 
 }
 
+
+
+export function DownloadButton({ date, userId, transactions, setErrorMessage }) {
+
+  const downloadFile = async () => {
+   const response = await API.downloadFile(userId,date);
+   if(response==="error")
+      setErrorMessage("Ocorreu um erro a gerar o ficheiro")
+  }
+
+  return (<>{transactions.length > 0 && <button class="secundaryButtons" onClick={downloadFile}>Download</button>}</>)
+
+}
+
 function filterTransactions(date, transactions) {
   return transactions.filter(t => t.date.includes(date));
 }

@@ -279,6 +279,43 @@ export async function fetchTransactions(userId) {
   }
 }
 
+export async function downloadFile(userId, date) {
+  try {
+    const url = `${baseUrl}/getFile?userId=${userId}&date=${date}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      console.error("Server error status:", response.status);
+      return;
+    }
+    const responseClone = response.clone();
+    const blob = await responseClone.blob();
+
+    console.log("Downloaded Blob Size:", blob.size);
+
+    if (blob.size === 0) {
+      return "error";
+    }
+
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', `${date}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+
+    link.parentNode.removeChild(link);
+    window.URL.revokeObjectURL(downloadUrl);
+
+  } catch (error) {
+    console.error("Download exception:", error);
+    return "error";
+  }
+}
+
 export async function addTransaction(userId, typeName, date, value, isRevenue) {
   try {
     const url = `${baseUrl}/addTransaction?userId=${userId}&date=${date}&typeName=${typeName}&value=${value}&isRevenue=${isRevenue}`;
@@ -367,7 +404,7 @@ export async function deleteTransaction(userId, date, typeName, value, isRevenue
 }
 
 export async function purgeTypes(userId) {
-   try {
+  try {
     const url = `${baseUrl}/purgeTypes?userId=${userId}`;
 
     const response = await fetch(url, {

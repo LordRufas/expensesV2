@@ -364,4 +364,14 @@ class ControllerTest {
 
 
     }
+
+    @Test
+    void getFile() {
+        userController.createUser("user",  "pass");
+        userController.addTotal(1, "test","01/01/1990",1.0);
+        userController.addType(1, "test");
+        userController.addTransaction(1, "01/01/1990","test",1,false);
+        userController.getFile(1,"");
+        assertTrue(true);
+    }
 }

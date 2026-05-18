@@ -15,6 +15,9 @@ class TransactionTest {
     private Type type;
 
     @Autowired
+    private Totals total;
+
+    @Autowired
     private User user;
 
     @Autowired
@@ -143,4 +146,15 @@ class TransactionTest {
         assertEquals("User doesn't exist", response.getStatusMessage());
     }
 
+    @Test
+    void getFile() {
+        user.purgeUsers();
+        type.purgeTypes();
+        transaction.purgeTransactions();
+        user.createNewUser("user",  "pass");
+        type.addType(1, "test");
+        total.addTotal(1,"01/01/1990","test",1);
+        transaction.addTransaction(1,"01/01/1990", "test", 1.0, false);
+        assertNotEquals(null, transaction.getFile(1,"01/01/1990"));
+    }
 }
