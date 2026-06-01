@@ -153,7 +153,7 @@ export function AddTransactionButton({ userId, date, value, type, total, isReven
 
           const response = await changeTotal(value, total, totals, setTotals, isRevenue, userId, setErrorMessage);
           if (response === "ok")
-            setTransaction(prev => [...transactions, newTransaction]);
+            setTransaction(prev => [newTransaction, ...transactions]);
         } else {
           setErrorMessage(`Erro generico: ${response.statusMessage}`);
         }

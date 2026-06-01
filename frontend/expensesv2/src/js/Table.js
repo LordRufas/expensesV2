@@ -1,5 +1,11 @@
 import * as Buttons from "./Button";
-import { useState } from "react";
+import { useState,useMemo } from "react";
+
+
+const currencyFormatter = new Intl.NumberFormat('pt-pt', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 
 export function Balance({ data }) {
   let balance = 0;
@@ -43,41 +49,77 @@ export function Balance({ data }) {
 }
 
 export function ResumeTable({ info }) {
+  
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const sortedInfo = useMemo(() => {
+    if (!info) return [];
+    let sortableItems = [...info];
+
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        let aValue = a[sortConfig.key];
+        let bValue = b[sortConfig.key];
+
+        
+        if (typeof aValue === 'string') {
+          return sortConfig.direction === 'asc' 
+            ? aValue.localeCompare(bValue) 
+            : bValue.localeCompare(aValue);
+        }
+
+        
+        return sortConfig.direction === 'asc' 
+          ? aValue - bValue 
+          : bValue - aValue;
+      });
+    }
+    return sortableItems;
+  }, [info, sortConfig]);
+
+  
+  const requestSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  
+  const getClassNamesFor = (name) => {
+    if (!sortConfig.key) return;
+    return sortConfig.key === name ? (sortConfig.direction === 'asc' ? ' ▲' : ' ▼') : '';
+  };
+
   return (
     <table border="1">
       <thead>
         <tr>
-          <th>Nome </th>
-          <th>Valor </th>
+          <th onClick={() => requestSort('name')} style={{ cursor: 'pointer', userSelect: 'none' }}>
+            Nome {getClassNamesFor('name')}
+          </th>
+          <th onClick={() => requestSort('value')} style={{ cursor: 'pointer', userSelect: 'none' }}>
+            Valor {getClassNamesFor('value')}
+          </th>
         </tr>
       </thead>
-      {
-        info &&
+      {info && (
         <tbody>
-          {
-            info.map((data) => (<>
-              {data.value > 0 &&
-                <tr>
-                  <td id="positiveValue">{data.name}</td>
-                  <td id="positiveValue">{data.value.toFixed(2)} </td>
-                </tr>
-              }
-              {data.value < 0 &&
-                <tr>
-                  <td id="negativeValue">{data.name}</td>
-                  <td id="negativeValue">{data.value.toFixed(2)} </td>
-                </tr>
-              }
-              {data.value === 0 &&
-                <tr>
-                  <td>{data.name}</td>
-                  <td>{data.value.toFixed(2)} </td>
-                </tr>
-              }
-            </>))
-          }
+          {sortedInfo.map((data, index) => {
+            
+            let rowClass = '';
+            if (data.value > 0) rowClass = 'positiveValue';
+            if (data.value < 0) rowClass = 'negativeValue';
+
+            return (
+              <tr key={data.id || index}>
+                <td id={rowClass}>{data.name}</td>
+                <td id={rowClass}>{currencyFormatter.format(data.value.toFixed(2))}</td>
+              </tr>
+            );
+          })}
         </tbody>
-      }
+      )}
     </table>
   );
 }
@@ -117,14 +159,14 @@ export function TotalTable({ info, setInfo, userId, setErrorMessage }) {
             info.map((data) => (<>
               <tr>
                 <td><input class="calendar" type="text" value={data.name} placeholder={data.name} onChange={(e) => updateTotalName(e.target.value, data, setInfo, info)} /></td>
-                <td><input class="calendar" type="number" value={data.value} placeholder={data.value} onChange={(e) => updateTotalValue(e.target.value, data, setInfo, info)} /></td>
+                <td><input class="calendar" type="number" value={currencyFormatter.format(data.value)} placeholder={data.value} onChange={(e) => updateTotalValue(e.target.value, data, setInfo, info)} /></td>
                 <td><Buttons.DeleteTotalButton userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}></Buttons.DeleteTotalButton></td>
               </tr>
             </>)) :
             info.map((data) => (<>
               <tr>
                 <td>{data.name}</td>
-                <td>{data.value}</td>
+                <td>{currencyFormatter.format(data.value)}</td>
               </tr>
             </>))
           }
@@ -135,47 +177,99 @@ export function TotalTable({ info, setInfo, userId, setErrorMessage }) {
 }
 
 export function TransactionTable({ info, totals, setTotals, userId, editMode, setInfo, setErrorMessage }) {
+
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+  const sortedInfo = useMemo(() => {
+    if (!info) return [];
+    let sortableItems = [...info];
+
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        let aValue = a[sortConfig.key];
+        let bValue = b[sortConfig.key];
+        
+
+        if (typeof aValue === 'string') {
+          return sortConfig.direction === 'asc'
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        }
+
+        return sortConfig.direction === 'asc' 
+          ? aValue - bValue 
+          : bValue - aValue;
+      });
+    }
+    return sortableItems;
+  }, [info, sortConfig]);
+
+  // 3. Request sort handler
+  const requestSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getClassNamesFor = (name) => {
+    if (!sortConfig.key) return '';
+    return sortConfig.key === name ? (sortConfig.direction === 'asc' ? ' ▲' : ' ▼') : '';
+  };
+
   return (
     <table border="1">
       <thead>
         <tr>
           <th> data </th>
 
-          <th> tipo </th>
+          <th onClick={() => requestSort('typeName')} style={{ cursor: 'pointer', userSelect: 'none' }}>
+            tipo {getClassNamesFor('typeName')}
+          </th>
 
           {editMode && <th> total </th>}
 
-          <th> valor </th>
+          <th onClick={() => requestSort('value')} style={{ cursor: 'pointer', userSelect: 'none' }}>
+            valor {getClassNamesFor('value')}
+          </th>
+
           {editMode && <th></th>}
         </tr>
       </thead>
-      {
-        info &&
+      
+      {info && (
         <tbody>
-          {
-            info.map((data) => (<>
-              {
-                data.isRevenue === true || data.isRevenue === "true" ?
-                  <tr>
-                    <td id="positiveValue"> {data.date} </td>
-                    <td id="positiveValue">{data.typeName} </td>
-                    {editMode && <td id="positiveValue">{data.total} </td>}
-                    <td id="positiveValue">{data.value} </td>
-                    {editMode && <td><Buttons.DeleteTransactionButton totals={totals} setTotals={setTotals} userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton ></td>}
-                  </tr>
-                  :
-                  <tr>
-                    <td id="negativeValue"> {data.date} </td>
-                    <td id="negativeValue">{data.typeName} </td>
-                    {editMode && <td id="negativeValue">{data.total} </td>}
-                    <td id="negativeValue">{data.value} </td>
-                    {editMode && <td><Buttons.DeleteTransactionButton totals={totals} setTotals={setTotals} userId={userId} data={data} info={info} setInfo={setInfo} setErrorMessage={setErrorMessage}>apagar</Buttons.DeleteTransactionButton ></td>}
-                  </tr>
-              }
-            </>))
-          }
+          {sortedInfo.map((data, index) => {
+            const isRevenue = data.isRevenue === true || data.isRevenue === "true";
+            const rowClass = isRevenue ? "positiveValue" : "negativeValue";
+
+            return (
+              <tr key={data.id || index}>
+                <td id={rowClass}> {data.date} </td>
+                <td id={rowClass}>{data.typeName} </td>
+                {editMode && <td id={rowClass}>{data.total} </td>}
+                <td id={rowClass}>{currencyFormatter.format(data.value)} </td>
+                {editMode && (
+                  <td>
+                    <Buttons.DeleteTransactionButton 
+                      totals={totals} 
+                      setTotals={setTotals} 
+                      userId={userId} 
+                      data={data} 
+                      info={info} 
+                      setInfo={setInfo} 
+                      setErrorMessage={setErrorMessage}
+                    >
+                      apagar
+                    </Buttons.DeleteTransactionButton>
+                  </td>
+                )}
+              </tr>
+            );
+          })}
         </tbody>
-      }
+      )}
     </table>
   );
 }
